@@ -251,7 +251,7 @@ class EVCap(Blip2Base):
                 return_dict=True,
             )
             query_output_img = query_outputs_img.last_hidden_state #(B,num_query_tokens=32,Q_former_hidden_size=768)
-            query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device) #(32) ???
+            query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device) #(B,32) ?
             re_txt_list_all  = self.retrieve_similar_features(query_output_img, self.feat_index, self.ext_base_img_id)
             re_txt_list_batch = []
             for sublist in re_txt_list_all:
@@ -271,13 +271,14 @@ class EVCap(Blip2Base):
                     return_tensors="pt",
                 ).to(image.device)
 
+            #(1,num_query_tokens=32,encoder_hidden_size) expands to (B,num_query_tokens=32,encoder_hidden_size)
             query_tokens_txt = self.query_tokens_txt.expand(image_embeds.shape[0], -1, -1)
-            query_atts_txt = torch.ones(query_tokens_txt.size()[:-1], dtype=torch.long).to(
+            query_atts_txt = torch.ones(query_tokens_txt.size()[:-1], dtype=torch.long).to(   #(B,num_query_tokens=32)
                 image_embeds.device
             )
 
             query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device)
-            query_output_img_atts = torch.cat([query_atts_txt, query_output_img_atts], dim=1)
+            query_output_img_atts = torch.cat([query_atts_txt, query_output_img_atts], dim=1) #(B,64)
 
 
             attention_mask = text.attention_mask
