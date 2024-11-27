@@ -202,18 +202,18 @@ class EVCap(Blip2Base):
         return caption
 
     def retrieve_similar_features(self, query_features, feat_index, image_id, top_k = 5, sub_top_k = 32):
-        batch_size, nums, dims = query_features.shape
-        query_features = query_features.view(-1,dims)   
+        batch_size, nums, dims = query_features.shape #(B,num_query_tokens,encoder_hidden_states)
+        query_features = query_features.view(-1,dims)   #(B*num_query_tokens,encoder_hidden_states)
 
         query_features_cpu = query_features.detach().cpu().numpy()
         faiss.normalize_L2(query_features_cpu)
-        top_k_similarities, top_k_indices = feat_index.search(query_features_cpu, top_k)
+        top_k_similarities, top_k_indices = feat_index.search(query_features_cpu, top_k) #Both size (1,top_k)
 
-        top_k_indices = torch.tensor(top_k_indices).to(device = query_features.device)
-        top_k_similarities = torch.tensor(top_k_similarities).to(device = query_features.device)
-        top_k_similarities = top_k_similarities.view(batch_size, -1)
+        top_k_indices = torch.tensor(top_k_indices).to(device = query_features.device) #(1,top_k)
+        top_k_similarities = torch.tensor(top_k_similarities).to(device = query_features.device) 
+        top_k_similarities = top_k_similarities.view(batch_size, -1) #(B,top_k/B)
 
-        indices = top_k_indices.view(batch_size, -1)
+        indices = top_k_indices.view(batch_size, -1) #(B,top_k/B)
 
         re_txt_list_all = []    
         for batch_i in range(batch_size):
@@ -221,7 +221,7 @@ class EVCap(Blip2Base):
             re_txt_batch_list = []
             for i in indices_list: 
                 re_txt_batch_list.append(image_id[i])
-            re_txt_list_all.append(re_txt_batch_list)
+            re_txt_list_all.append(re_txt_batch_list) #(B,top_k/B)
          
         sorted_batched_ret = []
         for listA, listB in zip(top_k_similarities, re_txt_list_all):
@@ -229,7 +229,7 @@ class EVCap(Blip2Base):
             sorted_listB = [self.pre_name(listB[idx]) for idx in indices]
             sorted_listB = sorted_listB[:sub_top_k]
             sorted_batched_ret.append(sorted_listB)
-        return sorted_batched_ret
+        return sorted_batched_ret  #(B,top_k/B)
 
 
     def encode_img(self, image):
@@ -239,9 +239,10 @@ class EVCap(Blip2Base):
             image = image.to("cpu")
 
         with self.maybe_autocast():
-            image_embeds = self.ln_vision(self.visual_encoder(image)).to(device)
-            image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(device)
+            image_embeds = self.ln_vision(self.visual_encoder(image)).to(device) #(B,T,encoder_hidden_states)
+            image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(device) #(B,T)
 
+            #self.query_tokens = (1,num_query_tokens=32,encoder_hidden_size) expands to (B,num_query_tokens=32,encoder_hidden_size)
             query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
             query_outputs_img = self.Qformer.bert(
                 query_embeds=query_tokens,
@@ -249,8 +250,8 @@ class EVCap(Blip2Base):
                 encoder_attention_mask=image_atts,
                 return_dict=True,
             )
-            query_output_img = query_outputs_img.last_hidden_state
-            query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device)
+            query_output_img = query_outputs_img.last_hidden_state #(B,num_query_tokens=32,Q_former_hidden_size=768)
+            query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device) #(32) ???
             re_txt_list_all  = self.retrieve_similar_features(query_output_img, self.feat_index, self.ext_base_img_id)
             re_txt_list_batch = []
             for sublist in re_txt_list_all:
