@@ -7,6 +7,7 @@ import argparse
 import numpy as np
 import utils
 from optims import LinearWarmupCosineLRScheduler, set_optimizer
+from google.cloud import storage
 
 from dataset.coco_dataset import COCODataset
 from models.evcap import EVCap
@@ -15,6 +16,26 @@ from common.dist_utils import (
     init_distributed_mode,
     get_world_size,
 )
+
+def upload_to_gcs(local_file_path, bucket_name='evcap', blob_name='checkpoint/checkpoint.pt'):
+    """
+    Uploads a file to Google Cloud Storage.
+    """
+    # Initialize the Cloud Storage client
+    client = storage.Client()
+
+    # Get the bucket
+    bucket = client.get_bucket(bucket_name)
+
+    # Define the blob (destination path)
+    blob = bucket.blob(blob_name)
+
+    # Upload the file
+    blob.upload_from_filename(local_file_path)
+
+    print(f"Checkpoint uploaded to {bucket_name}/{blob_name}")
+
+
 
 
 def set_seed(seed: int) -> None:
@@ -46,6 +67,7 @@ def save_checkpoint(model,optimizer, cur_epoch, output_dir):
     }
     print("Saving checkpoint at epoch {} to {}.".format(cur_epoch, output_dir))
     torch.save(save_obj, output_dir)
+    upload_to_gcs(output_dir)
 
 
 def train(dataset, model, args):
@@ -116,6 +138,7 @@ def train(dataset, model, args):
         print("Averaged stats:", metric_logger.global_avg())
  
         if epoch == epochs - 1:
+            os.makedirs(output_dir, exist_ok=True)
             output_dir_model = os.path.join(output_dir, f"{epoch:03d}.pt")
             save_checkpoint(model, optimizer, epoch, output_dir_model)
     return model
