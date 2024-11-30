@@ -9,7 +9,8 @@ import utils
 from optims import LinearWarmupCosineLRScheduler, set_optimizer
 from google.cloud import storage
 
-from dataset.coco_dataset import COCODataset
+# from dataset.coco_dataset import COCODataset
+from dataset.fusecap_coco_dataset import COCODataset
 from models.evcap import EVCap
 from common.dist_utils import (
     get_rank,
@@ -143,6 +144,12 @@ def train(dataset, model, args):
             save_checkpoint(model, optimizer, epoch, output_dir_model)
     return model
 
+def create_test_file():
+    test_file_path = './test_upload.txt'
+    with open(test_file_path, 'w') as f:
+        f.write("This is a test file to upload to Google Cloud Storage.")
+    return test_file_path
+
 
 def main():
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -168,6 +175,11 @@ def main():
         set_seed(args.random_seed)
     init_distributed_mode(args)
     print(f'args: {vars(args)}')
+
+    # Test upload to Google Cloud Storage before starting the training
+    test_file_path = create_test_file()  # Create a dummy test file
+    upload_to_gcs(test_file_path, bucket_name='evcap', blob_name='test/test_upload.txt')
+    
     data_root = 'data/coco/coco2014'
     dataset = COCODataset(data_root=data_root)
     model_type = "vicuna-13b-v1.3"
