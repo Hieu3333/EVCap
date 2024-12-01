@@ -4,8 +4,6 @@ import json
 from torch.utils.data import Dataset
 from torchvision import transforms
 from torchvision.transforms.functional import InterpolationMode
-from torch.utils.data import Dataset
-
 
 class COCODataset(Dataset):
 
@@ -14,7 +12,9 @@ class COCODataset(Dataset):
 
     def __getitem__(self, index):
         ann = self.annotation[index]
-        img_file = f'COCO_train2014_{int(ann["image_id"]):012d}.jpg'
+        image_id = ann['image_id']
+        image_id = image_id.split('_')[1]
+        img_file = f"COCO_train2014_{int(image_id):012d}.jpg"
         image_path = os.path.join(self.vis_root, img_file)
         image = Image.open(image_path).convert("RGB")
         image = self.transform(image)
@@ -22,21 +22,27 @@ class COCODataset(Dataset):
         return {
             "image": image,
             "text_input": caption,
-            "image_id": self.img_ids[ann["image_id"]],
+            "image_id": self.img_ids[ann['image_id']],
         }
 
     def __init__(self, data_root):
-        ann_path = os.path.join(data_root, 'annotations/filtered_fusecap_coco.json')
-        self.vis_root=os.path.join(data_root, 'train2014')
-        self.annotation = []
-        self.annotation.extend(json.load(open(ann_path, "r"))['annotations'])
+        ann_path = os.path.join(data_root, "annotations/filtered_fusecap_coco.json")
+        self.vis_root = os.path.join(data_root, "train2014")
+
+        # Load annotations from JSON file
+        with open(ann_path, "r") as file:
+            self.annotation = json.load(file)  # Directly load the list
+
+        # Build image ID mapping
         self.img_ids = {}
         n = 0
         for ann in self.annotation:
             img_id = ann["image_id"]
-            if img_id not in self.img_ids.keys():
+            if img_id not in self.img_ids:
                 self.img_ids[img_id] = n
                 n += 1
+
+        # Define image transformations
         self.transform = transforms.Compose([
             transforms.Resize((224, 224), interpolation=InterpolationMode.BICUBIC),
             transforms.ToTensor(),
