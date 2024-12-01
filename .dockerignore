@@ -1,0 +1,6 @@
+*.pyc
+__pycache__/
+env_evcap
+venv
+.git/
+.DS_Store
