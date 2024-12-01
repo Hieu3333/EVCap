@@ -182,7 +182,7 @@ def main():
     
     data_root = 'data/coco/coco2014'
     dataset = COCODataset(data_root=data_root)
-    model_type = "vicuna-13b-v1.3"
+    model_type = "lmsys/vicuna-13b-v1.3"
     model = EVCap(
             ext_path = 'ext_data/ext_memory_lvis.pkl',
             vit_model="eva_clip_g",

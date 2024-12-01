@@ -14,17 +14,19 @@ $HOME/miniconda/bin/conda init
 # Reload shell
 source ~/.bashrc
 
-# Step 2: Clone the remote repository
+# Step 2: Clone the remote repository to /workspace
 echo "Cloning the repository..."
-# Replace with your repository URL
+# Change to the workspace directory (ensure you have access to it)
+cd /workspace
 git clone https://github.com/Hieu3333/EVCap.git
 cd EVCap
 
-# Step 3: Create a conda environment from environment.yaml
+# Step 3: Create a conda environment from environment.yaml inside /workspace
 echo "Creating conda environment from environment.yaml..."
-conda env create -f environment.yaml
+# Create the environment inside /workspace
+conda env create -f environment.yaml -p /workspace/env_evcap
 # Activate the environment
-conda activate $(head -n 1 environment.yaml | grep 'name:' | cut -d ' ' -f 2)
+source activate /workspace/env_evcap
 
 echo "Environment setup complete."
 
@@ -37,4 +39,5 @@ conda install -c conda-forge google-cloud-storage
 
 echo "Downloading Coco dataset"
 wget http://images.cocodataset.org/zips/train2014.zip
-unzip train2014.zip -d data/coco/coco2014
+unzip -q train2014.zip -d data/coco/coco2014
+
