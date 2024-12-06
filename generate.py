@@ -85,6 +85,7 @@ def load_model(ckpt_path, device, model_type="lmsys/vicuna-13b-v1.3"):
 
     model.load_state_dict(new_state_dict, strict=False)
     model.to(device)
+    print('Using: ',device)
     return model
 
 def main(args):
@@ -109,7 +110,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', default='cuda:0', help='Device to run the model on (e.g., "cuda:0" or "cpu")')
     parser.add_argument('--img_url', required=True, help='URL of the image to generate a caption for')
-    parser.add_argument('--ckpt', required=True, help='Path to the checkpoint file')
+    parser.add_argument('--ckpt', default='results/train_evcap/final_000.pt', help='Path to the checkpoint file')
     parser.add_argument('--beam_width', type=int, default=5, help='Beam width for beam search')
     parser.add_argument('--random_seed', type=int, default=42, help='Random seed for reproducibility')
 
