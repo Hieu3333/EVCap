@@ -11,3 +11,19 @@ city.jpg: A serene sunset scene featuring a bridge over calm waters, with tall b
 act.jpg: A group of people, including a young girl with long blond hair, dance in a field under a cloudy blue sky. One person wears a white shirt and another wears a blue shirt.
 
 Kylian-9678-1726008742.jpg: A man in a white shirt holds a silver trophy while standing next to a man in a white shirt. The man in the white shirt has brown and black hair and is wearing a silver necklace. The trophy has the text "2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 
+
+['parasol [SEP] lightning rod [SEP] wreath [SEP] window box for plants [SEP] slide [SEP] flip-flop sandal [SEP] plume [SEP] button [SEP] calf [SEP] lamppost']
+Caption generated for images/southeastasia.jpg
+['wristband [SEP] whistle [SEP] belt buckle [SEP] armband [SEP] necktie [SEP] flagpole [SEP] snowman [SEP] trophy cup [SEP] gasmask [SEP] duffel bag']
+Caption generated for images/images.jpg
+['sail [SEP] banjo [SEP] streetlight [SEP] boxing glove [SEP] bib [SEP] flagpole [SEP] backpack [SEP] tablecloth [SEP] gasmask [SEP] shoulder bag']
+Caption generated for images/fes.jpg
+['power shovel [SEP] bulldozer [SEP] reflector [SEP] trailer truck [SEP] log [SEP] airplane [SEP] polar bear [SEP] grizzly [SEP] wheel [SEP] propeller']
+Caption generated for images/coal.jpg
+['mast [SEP] ferris wheel [SEP] buoy [SEP] weathervane [SEP] ferry [SEP] license plate [SEP] dress suit [SEP] sail [SEP] cruise ship [SEP] stop sign']
+Caption generated for images/city.jpg
+['raincoat [SEP] kite [SEP] watch [SEP] airplane [SEP] folding chair [SEP] cincture [SEP] skirt [SEP] poncho [SEP] headband [SEP] lamppost']
+Caption generated for images/act.jpg
+['armband [SEP] trophy cup [SEP] belt buckle [SEP] necklace [SEP] whistle [SEP] water jug [SEP] robe [SEP] bass horn [SEP] mallet [SEP] television camera']
+Caption generated for images/Kylian-9678-1726008742.jpg
+Captions written to captions.txt
