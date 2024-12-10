@@ -23,9 +23,8 @@ def set_seed(seed: int) -> None:
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-def preprocess_image_from_url(img_url):
-    response = requests.get(img_url)
-    img = Image.open(BytesIO(response.content)).convert('RGB')
+def preprocess_image(img_path):
+    img = Image.open(img_path).convert('RGB')
     transform = transforms.Compose([
         transforms.Resize((224, 224), interpolation=InterpolationMode.BICUBIC),
         transforms.ToTensor(),
@@ -33,9 +32,9 @@ def preprocess_image_from_url(img_url):
     ])
     return transform(img).unsqueeze(0)
 
-def generate_caption(model, tokenizer, img_url, beam_width=5):
+def generate_caption(model, tokenizer, img_path, beam_width=5):
     device = next(model.parameters()).device
-    image = preprocess_image_from_url(img_url).to(device)
+    image = preprocess_image(img_path).to(device)
 
     # Forward pass to generate caption
     with torch.cuda.amp.autocast(enabled=True):
@@ -84,7 +83,6 @@ def load_model(ckpt_path, device, model_type="lmsys/vicuna-13b-v1.3"):
         new_state_dict[name] = v
 
     model.load_state_dict(new_state_dict, strict=False)
-    model.to(device)
     return model
 
 def main(args):
@@ -95,21 +93,33 @@ def main(args):
     device = args.device
     ckpt = args.ckpt
     model = load_model(ckpt, device)
+    model = model.to(device)
 
     # Load tokenizer
     tokenizer = model.llama_tokenizer
 
-    # Generate caption for the provided image URL
-    caption = generate_caption(model, tokenizer, args.img_url, beam_width=args.beam_width)
+    # Open output file for writing captions
+    output_file = "captions.txt"
+    with open(output_file, "w") as f:
+        image_folder = args.images_folder
+        image_files = [os.path.join(image_folder, file) for file in os.listdir(image_folder) if file.endswith(('.png', '.jpg', '.jpeg'))]
 
-    # Output the generated caption
-    print(f"Generated Caption: {caption}")
+        for img_path in image_files:
+            try:
+                caption = generate_caption(model, tokenizer, img_path, beam_width=args.beam_width)
+                f.write(f"{os.path.basename(img_path)}: {caption}\n")
+                print(f"Caption generated for {img_path}")
+            except Exception as e:
+                print(f"Error processing {img_path}: {e}")
+                f.write(f"{os.path.basename(img_path)}: ERROR - {e}\n")
+
+    print(f"Captions written to {output_file}")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', default='cuda:0', help='Device to run the model on (e.g., "cuda:0" or "cpu")')
-    parser.add_argument('--img_url', required=True, help='URL of the image to generate a caption for')
-    parser.add_argument('--ckpt', required=True, help='Path to the checkpoint file')
+    parser.add_argument('--images_folder', default='images', help='Path to the folder containing images')
+    parser.add_argument('--ckpt', default='results/train_evcap/final_000.pt', help='Path to the checkpoint file')
     parser.add_argument('--beam_width', type=int, default=5, help='Beam width for beam search')
     parser.add_argument('--random_seed', type=int, default=42, help='Random seed for reproducibility')
 

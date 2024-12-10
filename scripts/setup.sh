@@ -2,7 +2,7 @@
 
 # Exit the script on error
 set -e
-
+cd /workspace
 # Step 1: Install Miniconda
 echo "Installing Miniconda..."
 # Download Miniconda (Linux version)
@@ -17,7 +17,6 @@ source ~/.bashrc
 # Step 2: Clone the remote repository to /workspace
 echo "Cloning the repository..."
 # Change to the workspace directory (ensure you have access to it)
-cd /workspace
 git clone https://github.com/Hieu3333/EVCap.git
 cd EVCap
 
@@ -29,6 +28,8 @@ conda env create -f environment.yaml -p /workspace/env_evcap
 source activate /workspace/env_evcap
 
 echo "Environment setup complete."
+export HF_HOME=/workspace/huggingface_cache
+
 
 # echo "Installing Google Cloud SDK..."
 # sudo apt-get update -y

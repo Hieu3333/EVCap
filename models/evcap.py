@@ -262,6 +262,7 @@ class EVCap(Blip2Base):
                         if len(sublist_new)>self.topn: 
                             break
                 re_txt_list_batch.append(" [SEP] ".join(sublist_new))
+            # print(re_txt_list_batch)
 
             text = self.bert_tokenizer(
                     re_txt_list_batch,
