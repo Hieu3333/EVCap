@@ -260,21 +260,33 @@ class EVCap(Blip2Base):
             dict: A dictionary containing batched objects and actions.
         """
         # Step 1: Reshape query features and search for top-k neighbors
-        batch_size, nums, dims = query_features.shape
-        query_features = query_features.view(-1, dims)  # (B * num_query_tokens, dims)
-        query_features_cpu = query_features.detach().cpu().numpy()
-        faiss.normalize_L2(query_features_cpu)
+        # batch_size, nums, dims = query_features.shape
+        # query_features = query_features.view(-1, dims)  # (B * num_query_tokens, dims)
+        # query_features_cpu = query_features.detach().cpu().numpy()
+        # faiss.normalize_L2(query_features_cpu)
         
-        top_k_similarities, top_k_indices = feat_index.search(query_features_cpu, top_k)
+        # top_k_similarities, top_k_indices = feat_index.search(query_features_cpu, top_k)
 
-        # Step 2: Convert FAISS results to tensors
-        top_k_indices = torch.tensor(top_k_indices).to(device=query_features.device)
+        # # Step 2: Convert FAISS results to tensors
+        # top_k_indices = torch.tensor(top_k_indices).to(device=query_features.device)
 
-        # Step 3: Map indices to captions
-        retrieved_captions = []
-        for indices in top_k_indices:
-            captions = [image_id[idx.item()] for idx in indices[:sub_top_k]]
-            retrieved_captions.append(captions)
+        # # Step 3: Map indices to captions
+        # retrieved_captions = []
+        # for indices in top_k_indices:
+        #     captions = [image_id[idx.item()] for idx in indices[:sub_top_k]]
+        #     retrieved_captions.append(captions)
+        retrieved_captions = [
+            "A group of women are trying to push the table to the corner of the room.",
+            "The cat is sleeping on the mat.",
+            "A dog runs across the park chasing a ball.",
+            "A man is sitting on a chair reading a book.",
+            "The table is covered with a red cloth.",
+            "A cat is sitting on a windowsill.",
+            "The dog jumps over the fence.",
+            "A woman is painting a canvas in a studio.",
+            "Children are playing with a ball in the garden.",
+            "A person is eating a sandwich in the park."
+        ]
 
         # Step 4: Extract objects and actions
         batched_combined = []
@@ -323,6 +335,9 @@ class EVCap(Blip2Base):
                             break
                 re_txt_list_batch.append(" [SEP] ".join(sublist_new))
             # print(re_txt_list_batch)
+
+            object_action = retrieve_caption_and_filter(query_output_img,self.feat_index,self.ext_base_img_id)
+            print(object_action)
 
             text = self.bert_tokenizer(
                     re_txt_list_batch,
