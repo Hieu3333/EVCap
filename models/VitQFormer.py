@@ -106,37 +106,37 @@ class EVCap(Blip2Base):
 
         
 
-        self.max_txt_len = max_txt_len
-        self.end_sym = end_sym
+        # self.max_txt_len = max_txt_len
+        # self.end_sym = end_sym
 
-        if prompt_path:
-            with open(prompt_path, 'r') as f:
-                raw_prompts = f.read().splitlines()
-            filted_prompts = [raw_prompt for raw_prompt in raw_prompts if "<ImageHere>" in raw_prompt]
-            self.prompt_list = [prompt_template.format(p) for p in filted_prompts]
-            print('Load {} training prompts'.format(len(self.prompt_list)))
-            print('Prompt Example \n{}'.format(random.choice(self.prompt_list)))
-        else:
-            self.prompt_list = []
-        print(ext_path)
-        with open(ext_path, 'rb') as f:
-            ext_base_img, self.ext_base_img_id = pickle.load(f)
-            print(ext_base_img.shape, len(self.ext_base_img_id))
-            feature_library_cpu = ext_base_img.cpu().numpy()
-            faiss.normalize_L2(feature_library_cpu)
-            self.feat_index = faiss.IndexFlatIP(feature_library_cpu.shape[1])
-            self.feat_index.add(feature_library_cpu)
-            print(f"loaded external base image")
-        self.nlp = spacy.load("en_core_web_sm")
-        print("loaded spacy")
-        with open(caption_ext_path,'rb') as f:
-            caption_ext_base_img, self.caption_ext_base_img_id = pickle.load(f)
-            print(caption_ext_base_img.shape,len(self.caption_ext_base_img_id))
-            caption_feature_library_cpu = ext_base_img.cpu().numpy()
-            faiss.normalize_L2(caption_feature_library_cpu)
-            self.caption_feat_index = faiss.IndexFlatIP(caption_feature_library_cpu.shape[1])
-            self.caption_feat_index.add(caption_feature_library_cpu)
-            print(f"loaded caption external base image")
+        # if prompt_path:
+        #     with open(prompt_path, 'r') as f:
+        #         raw_prompts = f.read().splitlines()
+        #     filted_prompts = [raw_prompt for raw_prompt in raw_prompts if "<ImageHere>" in raw_prompt]
+        #     self.prompt_list = [prompt_template.format(p) for p in filted_prompts]
+        #     print('Load {} training prompts'.format(len(self.prompt_list)))
+        #     print('Prompt Example \n{}'.format(random.choice(self.prompt_list)))
+        # else:
+        #     self.prompt_list = []
+        # print(ext_path)
+        # with open(ext_path, 'rb') as f:
+        #     ext_base_img, self.ext_base_img_id = pickle.load(f)
+        #     print(ext_base_img.shape, len(self.ext_base_img_id))
+        #     feature_library_cpu = ext_base_img.cpu().numpy()
+        #     faiss.normalize_L2(feature_library_cpu)
+        #     self.feat_index = faiss.IndexFlatIP(feature_library_cpu.shape[1])
+        #     self.feat_index.add(feature_library_cpu)
+        #     print(f"loaded external base image")
+        # self.nlp = spacy.load("en_core_web_sm")
+        # print("loaded spacy")
+        # with open(caption_ext_path,'rb') as f:
+        #     caption_ext_base_img, self.caption_ext_base_img_id = pickle.load(f)
+        #     print(caption_ext_base_img.shape,len(self.caption_ext_base_img_id))
+        #     caption_feature_library_cpu = ext_base_img.cpu().numpy()
+        #     faiss.normalize_L2(caption_feature_library_cpu)
+        #     self.caption_feat_index = faiss.IndexFlatIP(caption_feature_library_cpu.shape[1])
+        #     self.caption_feat_index.add(caption_feature_library_cpu)
+        #     print(f"loaded caption external base image")
 
 
     def vit_to_cpu(self):
