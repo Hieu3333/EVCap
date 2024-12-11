@@ -11,6 +11,7 @@ from torchvision import transforms
 from torchvision.transforms.functional import InterpolationMode
 from collections import OrderedDict
 import argparse
+import pickle
 
 def set_seed(seed: int) -> None:
     import random
@@ -39,7 +40,7 @@ def generate_img_feature(model, img_path):
     # Forward pass to generate caption
     with torch.cuda.amp.autocast(enabled=True):
         query = model.get_img_features(image)
-        print(query.shape)
+        return query
 
 def load_model(ckpt_path, device, model_type="lmsys/vicuna-13b-v1.3"):
     model = EVCap(
@@ -87,18 +88,31 @@ def main(args):
     # Load tokenizer
     # tokenizer = model.llama_tokenizer
 
-    # Open output file for writing captions
-    output_file = "captions.txt"
-    with open(output_file, "w") as f:
-        image_folder = args.images_folder
-        image_files = [os.path.join(image_folder, file) for file in os.listdir(image_folder) if file.endswith(('.png', '.jpg', '.jpeg'))]
+    
+    inpath = '/workspace/annotations/coco/val2014/annotations/captions_val2014.json'
+    # Read the JSON file containing annotations
+    with open(inpath, 'r') as infile:
+        annotations = json.load(infile)
 
-        for img_path in image_files:
-            try:
-                caption = generate_img_feature(model, img_path)
-            except Exception as e:
-                print(f"Error processing {img_path}: {e}")
-                f.write(f"{os.path.basename(img_path)}: ERROR - {e}\n")
+    # Extract all captions
+    captions = [annotation['caption'] for annotation in annotations.get('annotations', [])]
+    
+    image_folder = '/workspace/annotations/coco/val2014/val2014/'
+    image_files = [os.path.join(image_folder, file) for file in os.listdir(image_folder) if file.endswith(('.png', '.jpg', '.jpeg'))]
+    all_query = []
+    for img_path in image_files:
+        query = generate_img_feature(model, img_path)
+        all_query.append(query)
+    image_features = torch.cat(all_query, dim=0)  # Shape [num_images, 768]
+    pickle_file = '/ext_data/caption_ext_memory.pkl'
+
+    # Save all_query and captions into a single pickle file
+    with open(pickle_file, 'wb') as f:
+        pickle.dump(image_features, f)
+        pickle.dump(captions, f)
+
+    print(f"Saved queries and captions to {pickle_file}")
+
 
 
 
