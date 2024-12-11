@@ -104,7 +104,7 @@ def main(args):
         query = generate_img_feature(model, img_path)
         all_query.append(query)
     image_features = torch.cat(all_query, dim=0)  # Shape [num_images, 768]
-    pickle_file = '/ext_data/caption_ext_memory.pkl'
+    pickle_file = 'ext_data/caption_ext_memory.pkl'
 
     # Save all_query and captions into a single pickle file
     with open(pickle_file, 'wb') as f:
