@@ -318,7 +318,7 @@ class EVCap(Blip2Base):
             action_counter = Counter()
 
             for caption in captions:
-                objects, actions = extract_objects_actions(caption)
+                objects, actions = self.extract_objects_actions(caption)
                 object_counter.update(objects)
                 action_counter.update(actions)
 
@@ -326,8 +326,8 @@ class EVCap(Blip2Base):
             top_objects = [term for term, _ in object_counter.most_common(top_n)]
             top_actions = [term for term, _ in action_counter.most_common(top_n)]
 
-            batched_objects.append(top_objects) #(B,num_obj)
-            batched_actions.append(top_actions) #(B,num_act)
+            batched_objects.append(self.pre_name(top_objects)) #(B,num_obj)
+            batched_actions.append(self.pre_name(top_actions)) #(B,num_act)
 
         # Step 5: Organize results into batches
         return {
@@ -384,6 +384,7 @@ class EVCap(Blip2Base):
                 re_act_list_batch.append(" [SEP] ".join(sublist_new))
             
             re_final = torch.cat((re_txt_list_batch,re_act_list_batch),dim=-1)
+            print(re_final)
             
 
             # print(re_txt_list_batch)

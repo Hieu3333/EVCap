@@ -67,6 +67,8 @@ def load_model(ckpt_path, device, model_type="lmsys/vicuna-13b-v1.3"):
     return model
 
 def main(args):
+    # Total images matched with captions: 202654
+
     # Set random seed for reproducibility
     set_seed(args.random_seed)
 
@@ -114,7 +116,7 @@ def main(args):
     def process_batch(model, batch_files):
         images = [preprocess_image(file) for file in batch_files]  # Replace with actual preprocessing function
         images_tensor = torch.stack(images, dim=0).to(device)  # Assuming images are converted to tensors
-        print(images_tensor.shape)
+        # print(images_tensor.shape)
         with torch.no_grad():
             queries = model.get_img_features(images_tensor)  # Process the batch
         return queries
