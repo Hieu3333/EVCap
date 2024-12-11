@@ -122,12 +122,11 @@ def main(args):
     for i in range(0, len(image_files), batch_size):
         batch_files = image_files[i:i + batch_size]
         batch_queries = process_batch(model, batch_files)
-        for query in batch_queries:
-            all_query.extend([query] * 5)  # Repeat each query 5 times
+        all_query.append(batch_queries)
         print(f"Processed batch {i // batch_size + 1}/{(len(image_files) - 1) // batch_size + 1}")
 
     # Concatenate all queries into a single tensor
-    image_features = torch.cat(all_query, dim=0)  # Shape [num_images * 5, feature_dim]
+    image_features = torch.cat(all_query, dim=0)  # Shape [num_images, feature_dim]
 
     # Save image features and captions into a single pickle file
     with open(pickle_file, 'wb') as f:
