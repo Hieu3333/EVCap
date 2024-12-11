@@ -101,7 +101,8 @@ def main(args):
     image_files = [os.path.join(image_folder, file) for file in os.listdir(image_folder) if file.endswith(('.png', '.jpg', '.jpeg'))]
     all_query = []
     for img_path in image_files:
-        query = generate_img_feature(model, img_path)
+        with torch.no_grad():
+            query = generate_img_feature(model, img_path)
         all_query.append(query)
     image_features = torch.cat(all_query, dim=0)  # Shape [num_images, 768]
     pickle_file = 'ext_data/caption_ext_memory.pkl'
