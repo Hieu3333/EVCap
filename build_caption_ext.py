@@ -96,14 +96,18 @@ def main(args):
 
     # Extract all captions
     captions = [annotation['caption'] for annotation in annotations.get('annotations', [])]
+    print(captions[:10])
     
     image_folder = '/workspace/annotations/coco/val2014/val2014/'
     image_files = [os.path.join(image_folder, file) for file in os.listdir(image_folder) if file.endswith(('.png', '.jpg', '.jpeg'))]
+    print("Total:"+ len(image_files))
     all_query = []
     for img_path in image_files:
         with torch.no_grad():
             query = generate_img_feature(model, img_path)
-        all_query.append(query)
+        for _ in range(5):
+            all_query.append(query)
+        print("Processed:" + len(all_query) +"images")
     image_features = torch.cat(all_query, dim=0)  # Shape [num_images, 768]
     pickle_file = 'ext_data/caption_ext_memory.pkl'
 
