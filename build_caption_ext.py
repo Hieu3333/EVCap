@@ -108,7 +108,7 @@ def main(args):
     # Generate image file paths based on image_id
     image_files = []
     for image_id, caption in image_caption_map.items():
-        image_id = item['image_id']
+        print(image_id,caption)
         # Format image_id to match file names (e.g., COCO_val2014_000000000000.jpg)
         filename = f"COCO_val2014_{image_id:012d}.jpg"  # Adjust based on your file naming convention
         filepath = os.path.join(image_folder, filename)
