@@ -1,7 +1,9 @@
 import pickle
 with open('ext_data/caption_ext_memory.pkl','rb') as f:
-  img_feature = pickle.load(f)
+  data = pickle.load(f)
+  img_features = data["image_features"]
+  captions = data["captions"]
   print('loaded data')
   
-  print(img_feature.shape)
-  print(img_feature[:5])
+  print(img_features.shape)
+  print(img_features[:5])
