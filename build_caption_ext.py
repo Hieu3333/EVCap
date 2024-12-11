@@ -81,11 +81,11 @@ def main(args):
     # Load model
     device = args.device
     ckpt = args.ckpt
-    model = load_model(ckpt, device)
+    # model = load_model(ckpt, device)
     model = model.to(device)
 
     # Load tokenizer
-    tokenizer = model.llama_tokenizer
+    # tokenizer = model.llama_tokenizer
 
     # Open output file for writing captions
     output_file = "captions.txt"
