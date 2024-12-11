@@ -73,9 +73,9 @@ def main(args):
     # Load model
     device = args.device
     ckpt = args.ckpt
-    model = load_model(ckpt, device)
-    model = model.to(device)
-    print(f"Model is on device: {model.device}")
+    # model = load_model(ckpt, device)
+    # model = model.to(device)
+    # print(f"Model is on device: {model.device}")
 
     # Load tokenizer
     # tokenizer = model.llama_tokenizer
