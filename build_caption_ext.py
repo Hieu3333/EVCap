@@ -94,11 +94,20 @@ def main(args):
     # Extract all captions and their corresponding image_ids
     ann = [{'image_id': annotation['image_id'], 'caption': annotation['caption']} 
         for annotation in annotations.get('annotations', [])]
-    captions = [item['caption'] for item in ann]
+    
+
+    image_caption_map = {}
+    for item in ann:
+        image_id = item['image_id']
+        if image_id not in image_caption_map:
+            image_caption_map[image_id] = item['caption']
+
+    # Now, `image_caption_map` contains one caption per image_id
+    captions = list(image_caption_map.values())
 
     # Generate image file paths based on image_id
     image_files = []
-    for item in ann:
+    for image_id, caption in image_caption_map.items():
         image_id = item['image_id']
         # Format image_id to match file names (e.g., COCO_val2014_000000000000.jpg)
         filename = f"COCO_val2014_{image_id:012d}.jpg"  # Adjust based on your file naming convention
