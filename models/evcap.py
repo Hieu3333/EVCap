@@ -170,27 +170,6 @@ class EVCap(Blip2Base):
         self.visual_encoder.to("cpu")
         self.visual_encoder.float()
     
-    def get_img_features(self, image):
-        device = image.device
-        if self.low_resource:
-            self.vit_to_cpu()
-            image = image.to("cpu")
-
-        with self.maybe_autocast():
-            image_embeds = self.ln_vision(self.visual_encoder(image)).to(device) #(B,T,encoder_hidden_states)
-            image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(device) #(B,T)
-
-            #self.query_tokens = (1,num_query_tokens=32,encoder_hidden_size) expands to (B,num_query_tokens=32,encoder_hidden_size)
-            query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
-            query_outputs_img = self.Qformer.bert(
-                query_embeds=query_tokens,
-                encoder_hidden_states=image_embeds,
-                encoder_attention_mask=image_atts,
-                return_dict=True,
-            )
-            query_output_img = query_outputs_img.last_hidden_state #(B,num_query_tokens=32,Q_former_hidden_size=768)
-            query = torch.mean(query_output_img,dim=1) #average over num_query_tokens => (B,1,768)
-            return query
 
 
     def prompt_wrap(self, img_embeds, atts_img, prompt_list):
