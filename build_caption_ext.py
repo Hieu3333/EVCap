@@ -89,29 +89,47 @@ def main(args):
     # tokenizer = model.llama_tokenizer
 
     
+    # Paths
     inpath = '/workspace/annotations/coco/val2014/annotations/captions_val2014.json'
+    image_folder = '/workspace/annotations/coco/val2014/val2014/'
+    pickle_file = 'ext_data/caption_ext_memory.pkl'
+
     # Read the JSON file containing annotations
     with open(inpath, 'r') as infile:
         annotations = json.load(infile)
 
     # Extract all captions
     captions = [annotation['caption'] for annotation in annotations.get('annotations', [])]
-    print(captions[:10])
-    
-    image_folder = '/workspace/annotations/coco/val2014/val2014/'
+    print(f"First 10 captions: {captions[:10]}")
+
+    # Get image file paths
     image_files = [os.path.join(image_folder, file) for file in os.listdir(image_folder) if file.endswith(('.png', '.jpg', '.jpeg'))]
     print(f"Total images: {len(image_files)}")
+
+    # Parameters for batching
+    batch_size = 16
     all_query = []
-    for img_path in image_files:
+
+    # Function to process a batch of images
+    def process_batch(model, batch_files):
+        images = [preprocess_image(file) for file in batch_files]  # Replace with actual preprocessing function
+        images_tensor = torch.stack(images, dim=0).to(device)  # Assuming images are converted to tensors
         with torch.no_grad():
-            query = generate_img_feature(model, img_path)
+            queries = model.get_img_features(images_tensor)  # Process the batch
+        return queries
 
-        all_query.append(query)
-        print(f"Processed {len(all_query)}/{len(image_files)} images")
-    image_features = torch.cat(all_query, dim=0)  # Shape [num_images, 768]
-    pickle_file = 'ext_data/caption_ext_memory.pkl'
+    # Batch processing
+    for i in range(0, len(image_files), batch_size):
+        batch_files = image_files[i:i + batch_size]
+        batch_queries = process_batch(model, batch_files)
+        for query in batch_queries:
+            all_query.extend([query] * 5)  # Repeat each query 5 times
+        print(f"Processed batch {i // batch_size + 1}/{(len(image_files) - 1) // batch_size + 1}")
 
-    # Save all_query and captions into a single pickle file
+    # Concatenate all queries into a single tensor
+    image_features = torch.cat(all_query, dim=0)  # Shape [num_images * 5, feature_dim]
+
+    # Save image features and captions into a single pickle file
     with open(pickle_file, 'wb') as f:
         pickle.dump(image_features, f)
         pickle.dump(captions, f)
