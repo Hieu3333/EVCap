@@ -7,3 +7,5 @@ with open('ext_data/caption_ext_memory.pkl','rb') as f:
   
   print(img_features.shape)
   print(img_features[:5])
+  print(len(captions))
+  print(captions[:5])
