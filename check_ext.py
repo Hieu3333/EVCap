@@ -1,5 +1,5 @@
 import pickle
-with open('ext_data\caption_ext_memory.pkl','rb') as f:
+with open('ext_data/caption_ext_memory.pkl','rb') as f:
   data = pickle.load(f)
   print('loaded data')
   img_feature = data["image_features"]
