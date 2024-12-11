@@ -9,6 +9,10 @@ from transformers import LlamaTokenizer
 import pickle
 import faiss
 import re
+from collections import Counter
+import spacy
+
+
 
 class EVCap(Blip2Base):
     
@@ -147,6 +151,8 @@ class EVCap(Blip2Base):
             self.feat_index = faiss.IndexFlatIP(feature_library_cpu.shape[1])
             self.feat_index.add(feature_library_cpu)
             print(f"loaded external base image")
+        self.nlp = spacy.load("en_core_web_sm")
+        print("loaded spacy")
 
 
     def vit_to_cpu(self):
@@ -230,6 +236,60 @@ class EVCap(Blip2Base):
             sorted_listB = sorted_listB[:sub_top_k]
             sorted_batched_ret.append(sorted_listB)
         return sorted_batched_ret  #(B,top_k/B)
+    
+    def extract_objects_actions(self,caption):
+    
+        doc = self.nlp(caption)
+        objects = [token.text for token in doc if token.pos_ in ("NOUN", "PROPN")]
+        actions = [token.text for token in doc if token.pos_ == "VERB"]
+        return objects, actions
+
+    def retrieve_caption_and_filter(self,feat_index, image_id, query_features, top_k=5, sub_top_k=32):
+        """
+        Retrieve captions based on FAISS search results, extract objects and actions, and arrange them into batches.
+
+        Parameters:
+            feat_index (faiss.Index): The FAISS index.
+            image_id (list): List of image IDs corresponding to the features in the index.
+            caption_base_id (dict): A dictionary mapping image IDs to captions.
+            query_features (torch.Tensor): Query features for retrieval (shape: (B, num_query_tokens, encoder_hidden_size)).
+            top_k (int): Number of top similar results to retrieve.
+            sub_top_k (int): Number of captions to process for object/action extraction.
+
+        Returns:
+            dict: A dictionary containing batched objects and actions.
+        """
+        # Step 1: Reshape query features and search for top-k neighbors
+        batch_size, nums, dims = query_features.shape
+        query_features = query_features.view(-1, dims)  # (B * num_query_tokens, dims)
+        query_features_cpu = query_features.detach().cpu().numpy()
+        faiss.normalize_L2(query_features_cpu)
+        
+        top_k_similarities, top_k_indices = feat_index.search(query_features_cpu, top_k)
+
+        # Step 2: Convert FAISS results to tensors
+        top_k_indices = torch.tensor(top_k_indices).to(device=query_features.device)
+
+        # Step 3: Map indices to captions
+        retrieved_captions = []
+        for indices in top_k_indices:
+            captions = [image_id[idx.item()] for idx in indices[:sub_top_k]]
+            retrieved_captions.append(captions)
+
+        # Step 4: Extract objects and actions
+        batched_combined = []
+
+        for captions in retrieved_captions:
+            combined_list = []
+
+            for caption in captions:
+                objects, actions = extract_objects_actions(caption)
+                combined_list.extend(objects + actions)
+
+            batched_combined.append(combined_list)
+
+        # Step 5: Organize results into batches
+        return batched_combined
 
 
     def encode_img(self, image):
