@@ -99,7 +99,7 @@ def main(args):
     print(f"Total images: {len(image_files)}")
 
     # Parameters for batching
-    batch_size = 16
+    batch_size = 32
     all_query = []
 
     # Function to process a batch of images
