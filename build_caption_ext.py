@@ -73,12 +73,11 @@ def main(args):
     # Load model
     device = args.device
     ckpt = args.ckpt
-    # model = load_model(ckpt, device)
-    # model = model.to(device)
-    # print(f"Model is on device: {model.device}")
+    model = load_model(ckpt, device)
+    model = model.to(device)
+    print(f"Model is on device: {model.device}")
 
-    # Load tokenizer
-    # tokenizer = model.llama_tokenizer
+    
 
     
     # Paths
@@ -90,43 +89,52 @@ def main(args):
     with open(inpath, 'r') as infile:
         annotations = json.load(infile)
 
-    # Extract all captions
-    captions = [annotation['caption'] for annotation in annotations.get('annotations', [])]
-    print(f"First 10 captions: {captions[:10]}")
+    # Extract all captions and their corresponding image_ids
+    ann = [{'image_id': annotation['image_id'], 'caption': annotation['caption']} 
+        for annotation in annotations.get('annotations', [])]
+    captions = [item['caption'] for item in ann]
 
-    # Get image file paths
-    image_files = [os.path.join(image_folder, file) for file in os.listdir(image_folder) if file.endswith(('.png', '.jpg', '.jpeg'))]
-    print(f"Total images: {len(image_files)}")
+    # Generate image file paths based on image_id
+    image_files = []
+    for item in ann:
+        image_id = item['image_id']
+        # Format image_id to match file names (e.g., COCO_val2014_000000000000.jpg)
+        filename = f"COCO_val2014_{image_id:012d}.jpg"  # Adjust based on your file naming convention
+        filepath = os.path.join(image_folder, filename)
+        if os.path.exists(filepath):
+            image_files.append(filepath)
 
-    # # Parameters for batching
-    # batch_size = 64
-    # all_query = []
+    print(f"Total images matched with captions: {len(image_files)}")
 
-    # # Function to process a batch of images
-    # def process_batch(model, batch_files):
-    #     images = [preprocess_image(file) for file in batch_files]  # Replace with actual preprocessing function
-    #     images_tensor = torch.stack(images, dim=0).to(device)  # Assuming images are converted to tensors
-    #     print(images_tensor.shape)
-    #     with torch.no_grad():
-    #         queries = model.get_img_features(images_tensor)  # Process the batch
-    #     return queries
+    # Parameters for batching
+    batch_size = 64
+    all_query = []
 
-    # # Batch processing
-    # for i in range(0, len(image_files), batch_size):
-    #     batch_files = image_files[i:i + batch_size]
-    #     batch_queries = process_batch(model, batch_files)
-    #     all_query.append(batch_queries)
-    #     print(f"Processed batch {i // batch_size + 1}/{(len(image_files) - 1) // batch_size + 1}")
+    # Function to process a batch of images
+    def process_batch(model, batch_files):
+        images = [preprocess_image(file) for file in batch_files]  # Replace with actual preprocessing function
+        images_tensor = torch.stack(images, dim=0).to(device)  # Assuming images are converted to tensors
+        print(images_tensor.shape)
+        with torch.no_grad():
+            queries = model.get_img_features(images_tensor)  # Process the batch
+        return queries
 
-    # # Concatenate all queries into a single tensor
-    # image_features = torch.cat(all_query, dim=0)  # Shape [num_images, feature_dim]
+    # Batch processing
+    for i in range(0, len(image_files), batch_size):
+        batch_files = image_files[i:i + batch_size]
+        batch_queries = process_batch(model, batch_files)
+        all_query.append(batch_queries)
+        print(f"Processed batch {i // batch_size + 1}/{(len(image_files) - 1) // batch_size + 1}")
 
-    # # Save image features and captions into a single pickle file
-    # with open(pickle_file, 'wb') as f:
-    #     pickle.dump(image_features, f)
-    #     pickle.dump(captions, f)
+    # Concatenate all queries into a single tensor
+    image_features = torch.cat(all_query, dim=0)  # Shape [num_images, feature_dim]
 
-    # print(f"Saved queries and captions to {pickle_file}")
+    # Save image features and captions into a single pickle file
+    with open(pickle_file, 'wb') as f:
+        pickle.dump(image_features, f)
+        pickle.dump(captions, f)  # Save the annotations with image_id and captions
+
+    print(f"Saved queries and captions to {pickle_file}")
 
 
 
