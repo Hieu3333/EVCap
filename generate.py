@@ -56,6 +56,7 @@ def generate_caption(model, tokenizer, img_path, beam_width=5):
 def load_model(ckpt_path, device, model_type="lmsys/vicuna-13b-v1.3"):
     model = EVCap(
         ext_path='ext_data/ext_memory_lvis.pkl',
+        caption_ext_path='ext_data/caption_ext_memory.pkl',
         vit_model="eva_clip_g",
         q_former_model="https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xxl.pth",
         img_size=224,
