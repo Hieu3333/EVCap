@@ -65,13 +65,13 @@ def load_model(ckpt_path, device, model_type="lmsys/vicuna-13b-v1.3"):
         device_8bit=0,
     )
 
-    state_dict = torch.load(ckpt_path, map_location=device)['model']
-    new_state_dict = OrderedDict()
-    for k, v in state_dict.items():
-        name = k[7:] if k.startswith('module.') else k
-        new_state_dict[name] = v
+    # state_dict = torch.load(ckpt_path, map_location=device)['model']
+    # new_state_dict = OrderedDict()
+    # for k, v in state_dict.items():
+    #     name = k[7:] if k.startswith('module.') else k
+    #     new_state_dict[name] = v
 
-    model.load_state_dict(new_state_dict, strict=False)
+    # model.load_state_dict(new_state_dict, strict=False)
     return model
 
 def main(args):
@@ -81,7 +81,7 @@ def main(args):
     # Load model
     device = args.device
     ckpt = args.ckpt
-    # model = load_model(ckpt, device)
+    model = load_model(ckpt, device)
     model = model.to(device)
 
     # Load tokenizer
