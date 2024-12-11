@@ -108,7 +108,6 @@ def main(args):
     # Generate image file paths based on image_id
     image_files = []
     for image_id, caption in image_caption_map.items():
-        print(image_id,caption)
         # Format image_id to match file names (e.g., COCO_val2014_000000000000.jpg)
         filename = f"COCO_val2014_{image_id:012d}.jpg"  # Adjust based on your file naming convention
         filepath = os.path.join(image_folder, filename)
@@ -140,12 +139,16 @@ def main(args):
     # Concatenate all queries into a single tensor
     image_features = torch.cat(all_query, dim=0)  # Shape [num_images, feature_dim]
 
-    # Save image features and captions into a single pickle file
-    with open(pickle_file, 'wb') as f:
-        pickle.dump(image_features, f)
-        pickle.dump(captions, f)  # Save the annotations with image_id and captions
+    data = {
+        "image_features": image_features,  # Store the image features tensor
+        "captions": captions               # Store the captions list
+    }
 
-    print(f"Saved queries and captions to {pickle_file}")
+    # Save the dictionary containing both image features and captions into a single pickle file
+    with open(pickle_file, 'wb') as f:
+        pickle.dump(data, f)
+
+    print(f"Saved image features and captions to {pickle_file}")
 
 
 
