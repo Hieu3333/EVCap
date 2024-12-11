@@ -4,7 +4,7 @@ import torch
 from PIL import Image
 import requests
 from io import BytesIO
-from models.evcap import EVCap
+from models.VitQFormer import EVCap
 from datasets import load_dataset
 from search import beam_search
 from torchvision import transforms
