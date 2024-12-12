@@ -29,6 +29,7 @@ source activate /workspace/env_evcap
 
 echo "Environment setup complete."
 export HF_HOME=/workspace/huggingface_cache
+python -m spacy download en_core_web_sm
 
 
 # echo "Installing Google Cloud SDK..."

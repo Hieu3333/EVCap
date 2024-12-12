@@ -9,17 +9,12 @@ from transformers import LlamaTokenizer
 import pickle
 import faiss
 import re
-from collections import Counter
-import spacy
-
-
 
 class EVCap(Blip2Base):
     
     def __init__(
         self,
         ext_path,
-        caption_ext_path,
         vit_model="eva_clip_g",
         q_former_model="https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xxl.pth",
         img_size=224,
@@ -146,26 +141,12 @@ class EVCap(Blip2Base):
         print(ext_path)
         with open(ext_path, 'rb') as f:
             ext_base_img, self.ext_base_img_id = pickle.load(f)
-            print("External memory 1: ", ext_base_img.shape, len(self.ext_base_img_id))
+            print(ext_base_img.shape, len(self.ext_base_img_id))
             feature_library_cpu = ext_base_img.cpu().numpy()
             faiss.normalize_L2(feature_library_cpu)
             self.feat_index = faiss.IndexFlatIP(feature_library_cpu.shape[1])
             self.feat_index.add(feature_library_cpu)
             print(f"loaded external base image")
-        self.nlp = spacy.load("en_core_web_sm")
-        print("loaded spacy")
-        with open(caption_ext_path,'rb') as f:
-            data = pickle.load(f)
-            caption_ext_base_img = data["image_features"]
-            self.caption_ext_base_img_id = data["captions"]
-            print("External memory 2:" ,caption_ext_base_img.shape,len(self.caption_ext_base_img_id))
-            print(caption_ext_base_img[:5])
-            print(self.caption_ext_base_img_id[:5])
-            caption_feature_library_cpu = caption_ext_base_img.cpu().numpy()
-            faiss.normalize_L2(caption_feature_library_cpu)
-            self.caption_feat_index = faiss.IndexFlatIP(caption_feature_library_cpu.shape[1])
-            self.caption_feat_index.add(caption_feature_library_cpu)
-            print(f"loaded caption external base image")
 
 
     def vit_to_cpu(self):
@@ -173,7 +154,6 @@ class EVCap(Blip2Base):
         self.ln_vision.float()
         self.visual_encoder.to("cpu")
         self.visual_encoder.float()
-    
 
 
     def prompt_wrap(self, img_embeds, atts_img, prompt_list):
@@ -222,18 +202,18 @@ class EVCap(Blip2Base):
         return caption
 
     def retrieve_similar_features(self, query_features, feat_index, image_id, top_k = 5, sub_top_k = 32):
-        batch_size, nums, dims = query_features.shape #(B,num_query_tokens,encoder_hidden_states)
-        query_features = query_features.view(-1,dims)   #(B*num_query_tokens,encoder_hidden_states)
+        batch_size, nums, dims = query_features.shape
+        query_features = query_features.view(-1,dims)   
 
         query_features_cpu = query_features.detach().cpu().numpy()
         faiss.normalize_L2(query_features_cpu)
-        top_k_similarities, top_k_indices = feat_index.search(query_features_cpu, top_k) #Both size (B*num_query_tokens,top_k)
+        top_k_similarities, top_k_indices = feat_index.search(query_features_cpu, top_k)
 
-        top_k_indices = torch.tensor(top_k_indices).to(device = query_features.device) #(B*num_query_tokens,top_k)
-        top_k_similarities = torch.tensor(top_k_similarities).to(device = query_features.device) 
-        top_k_similarities = top_k_similarities.view(batch_size, -1) #(B,num_query_tokens*top_k)
+        top_k_indices = torch.tensor(top_k_indices).to(device = query_features.device)
+        top_k_similarities = torch.tensor(top_k_similarities).to(device = query_features.device)
+        top_k_similarities = top_k_similarities.view(batch_size, -1)
 
-        indices = top_k_indices.view(batch_size, -1) #(B,num_query_tokens*top_k)
+        indices = top_k_indices.view(batch_size, -1)
 
         re_txt_list_all = []    
         for batch_i in range(batch_size):
@@ -241,7 +221,7 @@ class EVCap(Blip2Base):
             re_txt_batch_list = []
             for i in indices_list: 
                 re_txt_batch_list.append(image_id[i])
-            re_txt_list_all.append(re_txt_batch_list) #(B,num_query_tokens*top_k)
+            re_txt_list_all.append(re_txt_batch_list)
          
         sorted_batched_ret = []
         for listA, listB in zip(top_k_similarities, re_txt_list_all):
@@ -249,96 +229,7 @@ class EVCap(Blip2Base):
             sorted_listB = [self.pre_name(listB[idx]) for idx in indices]
             sorted_listB = sorted_listB[:sub_top_k]
             sorted_batched_ret.append(sorted_listB)
-        return sorted_batched_ret  #(B,sub_top_k)
-    
-    def extract_objects_actions(self,caption):
-    
-        doc = self.nlp(caption)
-        objects = [token.text for token in doc if token.pos_ in ("NOUN", "PROPN")]
-        actions = [token.text for token in doc if token.pos_ == "VERB"]
-        return objects, actions
-
-    def retrieve_caption_and_filter(self,feat_index, image_id, query_features, top_n=3, top_k=5, sub_top_k=32):
-        """
-        Retrieve captions based on FAISS search results, extract objects and actions, and arrange them into batches.
-
-        Parameters:
-            feat_index (faiss.Index): The FAISS index.
-            image_id (list): List of image IDs corresponding to the features in the index.
-            caption_base_id (dict): A dictionary mapping image IDs to captions.
-            query_features (torch.Tensor): Query features for retrieval (shape: (B, num_query_tokens, encoder_hidden_size)).
-            top_k (int): Number of top similar results to retrieve.
-            sub_top_k (int): Number of captions to process for object/action extraction.
-            top_n: number of objects and actions to be retrieved
-
-        Returns:
-            dict: A dictionary containing batched objects and actions.
-        """
-        batch_size, nums, dims = query_features.shape #(B,num_query_tokens,encoder_hidden_states)
-        query_features = query_features.view(-1,dims)   #(B*num_query_tokens,encoder_hidden_states)
-
-        query_features_cpu = query_features.detach().cpu().numpy()
-        faiss.normalize_L2(query_features_cpu)
-        top_k_similarities, top_k_indices = feat_index.search(query_features_cpu, top_k) #Both size (B*num_query_tokens,top_k)
-
-        top_k_indices = torch.tensor(top_k_indices).to(device = query_features.device) #(B*num_query_tokens,top_k)
-        top_k_similarities = torch.tensor(top_k_similarities).to(device = query_features.device) 
-        top_k_similarities = top_k_similarities.view(batch_size, -1) #(B,num_query_tokens*top_k)
-
-        indices = top_k_indices.view(batch_size, -1) #(B,num_query_tokens*top_k)
-
-        retrieved_captions = []    
-        for batch_i in range(batch_size):
-            indices_list = indices[batch_i]
-            re_txt_batch_list = []
-            for i in indices_list: 
-                re_txt_batch_list.append(image_id[i])
-            retrieved_captions.append(re_txt_batch_list) #(B,num_query_tokens*top_k)
-        
-        sorted_batched_ret = []
-        for listA, listB in zip(top_k_similarities, retrieved_captions):
-            sorted_listA, indices = listA.sort(descending=True)
-            sorted_listB = [listB[idx] for idx in indices]
-            sorted_listB = sorted_listB[:sub_top_k]
-            sorted_batched_ret.append(sorted_listB) #(B,sub_top_k) (B,32)
-        # retrieved_captions = [
-        #     "A group of women are trying to push the table to the corner of the room.",
-        #     "The cat is sleeping on the mat.",
-        #     "A dog runs across the park chasing a ball.",
-        #     "A man is sitting on a chair reading a book.",
-        #     "The table is covered with a red cloth.",
-        #     "A cat is sitting on a windowsill.",
-        #     "The dog jumps over the fence.",
-        #     "A woman is painting a canvas in a studio.",
-        #     "Children are playing with a ball in the garden.",
-        #     "A person is eating a sandwich in the park."
-        # ]
-
-        # Step 4: Extract objects and actions
-        batched_objects = []
-        batched_actions = []
-
-        for captions in sorted_batched_ret:
-            object_counter = Counter()
-            action_counter = Counter()
-
-            for caption in captions:
-                objects, actions = self.extract_objects_actions(caption)
-                object_counter.update(objects)
-                action_counter.update(actions)
-
-            # Get top-n frequent objects and actions
-            top_objects = [term for term, _ in object_counter.most_common(top_n)]
-            top_actions = [term for term, _ in action_counter.most_common(top_n)]
-
-            batched_objects.append(self.pre_name(top_objects)) #(B,num_obj)
-            batched_actions.append(self.pre_name(top_actions)) #(B,num_act)
-
-        # Step 5: Organize results into batches
-        return {
-            "objects": batched_objects,  # List of lists of objects, one per batch
-            "actions": batched_actions  # List of lists of actions, one per batch
-        }
+        return sorted_batched_ret
 
 
     def encode_img(self, image):
@@ -348,10 +239,9 @@ class EVCap(Blip2Base):
             image = image.to("cpu")
 
         with self.maybe_autocast():
-            image_embeds = self.ln_vision(self.visual_encoder(image)).to(device) #(B,T,encoder_hidden_states)
-            image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(device) #(B,T)
+            image_embeds = self.ln_vision(self.visual_encoder(image)).to(device)
+            image_atts = torch.ones(image_embeds.size()[:-1], dtype=torch.long).to(device)
 
-            #self.query_tokens = (1,num_query_tokens=32,encoder_hidden_size) expands to (B,num_query_tokens=32,encoder_hidden_size)
             query_tokens = self.query_tokens.expand(image_embeds.shape[0], -1, -1)
             query_outputs_img = self.Qformer.bert(
                 query_embeds=query_tokens,
@@ -359,14 +249,9 @@ class EVCap(Blip2Base):
                 encoder_attention_mask=image_atts,
                 return_dict=True,
             )
-            query_output_img = query_outputs_img.last_hidden_state #(B,num_query_tokens=32,Q_former_hidden_size=768)
-            query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device) #(B,32) ?
+            query_output_img = query_outputs_img.last_hidden_state
+            query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device)
             re_txt_list_all  = self.retrieve_similar_features(query_output_img, self.feat_index, self.ext_base_img_id)
-            re_obj_act_all = self.retrieve_caption_and_filter(query_output_img,self.caption_feat_index, self.caption_ext_base_img_id)
-            obj_list = re_obj_act_all["object"]
-            action_list = re_obj_act_all["action"]
-            #Concatenate object list from lvis object memory and caption object memory
-            re_txt_list_all = torch.cat((re_txt_list_all,obj_list),dim=-1)
             re_txt_list_batch = []
             for sublist in re_txt_list_all:
                 sublist_new = []
@@ -375,44 +260,23 @@ class EVCap(Blip2Base):
                         sublist_new.append(item)
                         if len(sublist_new)>self.topn: 
                             break
-                sublist_new = [" Object: "] + sublist_new
                 re_txt_list_batch.append(" [SEP] ".join(sublist_new))
 
-            re_act_list_batch = []
-            for sublist in action_list:
-                sublist_new = []
-                for item in sublist:
-                    if item not in sublist_new:
-                        sublist_new.append(item)
-                        if len(sublist_new)>self.topn: 
-                            break
-                sublist_new = [" Action: "] + sublist_new
-                re_act_list_batch.append(" [SEP] ".join(sublist_new))
-            
-            re_final = torch.cat((re_txt_list_batch,re_act_list_batch),dim=-1)
-            print(re_final)
-            
-
-            # print(re_txt_list_batch)
-
-            
-
             text = self.bert_tokenizer(
-                    re_final,
+                    re_txt_list_batch,
                     truncation=True,
                     padding="longest",
                     max_length=self.max_txt_len,
                     return_tensors="pt",
                 ).to(image.device)
 
-            #(1,num_query_tokens=32,encoder_hidden_size) expands to (B,num_query_tokens=32,encoder_hidden_size)
             query_tokens_txt = self.query_tokens_txt.expand(image_embeds.shape[0], -1, -1)
-            query_atts_txt = torch.ones(query_tokens_txt.size()[:-1], dtype=torch.long).to(   #(B,num_query_tokens=32)
+            query_atts_txt = torch.ones(query_tokens_txt.size()[:-1], dtype=torch.long).to(
                 image_embeds.device
             )
 
             query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device)
-            query_output_img_atts = torch.cat([query_atts_txt, query_output_img_atts], dim=1) #(B,64)
+            query_output_img_atts = torch.cat([query_atts_txt, query_output_img_atts], dim=1)
 
 
             attention_mask = text.attention_mask
