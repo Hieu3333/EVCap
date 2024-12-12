@@ -332,9 +332,11 @@ class EVCap(Blip2Base):
             top_actions = [term for term, _ in action_counter.most_common(top_n)]
 
             #Add self.pre_name
+            pre_name_top_objects = [self.pre_name(obj) for obj in top_objects ]
+            pre_name_top_actions = [self.pre_name(act) for act in top_actions]
 
-            batched_objects.append(top_objects) #(B,num_obj)
-            batched_actions.append(top_actions) #(B,num_act)
+            batched_objects.append(pre_name_top_objects) #(B,num_obj)
+            batched_actions.append(pre_name_top_actions) #(B,num_act)
 
         # Step 5: Organize results into batches
         return {
