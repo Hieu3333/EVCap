@@ -400,7 +400,15 @@ class EVCap(Blip2Base):
                 sublist_new = [" Action: "] + sublist_new
                 re_act_list_batch.append(" [SEP] ".join(sublist_new))
             
-            re_final = torch.cat((re_txt_list_batch,re_act_list_batch),dim=-1)
+            # Ensure both inputs are lists and have compatible shapes
+            if isinstance(re_txt_list_batch, list) and isinstance(re_act_list_batch, list):
+                if len(re_txt_list_batch) == len(re_act_list_batch):  # Check if batch sizes match
+                    # Concatenate along the last dimension for each batch element
+                    re_final = [row1 + row2 for row1, row2 in zip(re_txt_list_batch, re_act_list_batch)]
+                else:
+                    raise ValueError("Batch sizes (B) of the two lists do not match.")
+            else:
+                raise TypeError("Both inputs must be lists.")
             print(re_final)
             
 
