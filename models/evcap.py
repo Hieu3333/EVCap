@@ -369,8 +369,8 @@ class EVCap(Blip2Base):
             print("get memory 1")
             re_obj_act_all = self.retrieve_caption_and_filter(query_features=query_output_img,feat_index=self.caption_feat_index, image_id=self.caption_ext_base_img_id)
             print("get memory 2")
-            obj_list = re_obj_act_all["object"]
-            action_list = re_obj_act_all["action"]
+            obj_list = re_obj_act_all["objects"]
+            action_list = re_obj_act_all["actions"]
             #Concatenate object list from lvis object memory and caption object memory
             re_txt_list_all = torch.cat((re_txt_list_all,obj_list),dim=-1)
             re_txt_list_batch = []
