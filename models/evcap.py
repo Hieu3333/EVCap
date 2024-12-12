@@ -258,7 +258,7 @@ class EVCap(Blip2Base):
         actions = [token.text for token in doc if token.pos_ == "VERB"]
         return objects, actions
 
-    def retrieve_caption_and_filter(self,feat_index, image_id, query_features, top_n=3, top_k=5, sub_top_k=32):
+    def retrieve_caption_and_filter(self,query_features,feat_index, image_id, top_n=3, top_k=5, sub_top_k=32):
         """
         Retrieve captions based on FAISS search results, extract objects and actions, and arrange them into batches.
 
@@ -363,7 +363,7 @@ class EVCap(Blip2Base):
             query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device) #(B,32) ?
             re_txt_list_all  = self.retrieve_similar_features(query_output_img, self.feat_index, self.ext_base_img_id)
             print("get memory 1")
-            re_obj_act_all = self.retrieve_caption_and_filter(query_output_img,self.caption_feat_index, self.caption_ext_base_img_id)
+            re_obj_act_all = self.retrieve_caption_and_filter(query_features=query_output_img,feat_index=self.caption_feat_index, image_id=self.caption_ext_base_img_id)
             print("get memory 2")
             obj_list = re_obj_act_all["object"]
             action_list = re_obj_act_all["action"]
