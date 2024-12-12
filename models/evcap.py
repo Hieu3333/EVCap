@@ -256,7 +256,7 @@ class EVCap(Blip2Base):
         actions = [token.text for token in doc if token.pos_ == "VERB"]
         return objects, actions
 
-    def retrieve_caption_and_filter(self,feat_index, image_id, query_features, top_n, top_k=5, sub_top_k=32):
+    def retrieve_caption_and_filter(self,feat_index, image_id, query_features, top_n=3, top_k=5, sub_top_k=32):
         """
         Retrieve captions based on FAISS search results, extract objects and actions, and arrange them into batches.
 
@@ -267,6 +267,7 @@ class EVCap(Blip2Base):
             query_features (torch.Tensor): Query features for retrieval (shape: (B, num_query_tokens, encoder_hidden_size)).
             top_k (int): Number of top similar results to retrieve.
             sub_top_k (int): Number of captions to process for object/action extraction.
+            top_n: number of objects and actions to be retrieved
 
         Returns:
             dict: A dictionary containing batched objects and actions.
@@ -359,7 +360,7 @@ class EVCap(Blip2Base):
             query_output_img = query_outputs_img.last_hidden_state #(B,num_query_tokens=32,Q_former_hidden_size=768)
             query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device) #(B,32) ?
             re_txt_list_all  = self.retrieve_similar_features(query_output_img, self.feat_index, self.ext_base_img_id)
-            re_obj_act_all = self.retrieve_caption_and_filter(query_output_img,self.caption_feat_index, self.caption_ext_base_img_id,top_n=5)
+            re_obj_act_all = self.retrieve_caption_and_filter(query_output_img,self.caption_feat_index, self.caption_ext_base_img_id)
             obj_list = re_obj_act_all["object"]
             action_list = re_obj_act_all["action"]
             #Concatenate object list from lvis object memory and caption object memory
