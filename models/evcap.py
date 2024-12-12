@@ -155,9 +155,11 @@ class EVCap(Blip2Base):
         self.nlp = spacy.load("en_core_web_sm")
         print("loaded spacy")
         with open(caption_ext_path,'rb') as f:
-            caption_ext_base_img, self.caption_ext_base_img_id = pickle.load(f)
+            data = pickle.load(f)
+            caption_ext_base_img = data["image_features"]
+            self.caption_ext_base_img_id = data["captions"]
             print(caption_ext_base_img.shape,len(self.caption_ext_base_img_id))
-            caption_feature_library_cpu = ext_base_img.cpu().numpy()
+            caption_feature_library_cpu = caption_ext_base_img.cpu().numpy()
             faiss.normalize_L2(caption_feature_library_cpu)
             self.caption_feat_index = faiss.IndexFlatIP(caption_feature_library_cpu.shape[1])
             self.caption_feat_index.add(caption_feature_library_cpu)
