@@ -100,7 +100,7 @@ def main(args):
     tokenizer = model.llama_tokenizer
 
     # Open output file for writing captions
-    output_file = "captions.txt"
+    output_file = "captions_new.txt"
     with open(output_file, "w") as f:
         image_folder = args.images_folder
         image_files = [os.path.join(image_folder, file) for file in os.listdir(image_folder) if file.endswith(('.png', '.jpg', '.jpeg'))]
