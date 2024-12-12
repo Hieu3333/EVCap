@@ -35,14 +35,17 @@ def preprocess_image(img_path):
 def generate_caption(model, tokenizer, img_path, beam_width=5):
     device = next(model.parameters()).device
     image = preprocess_image(img_path).to(device)
+    print("Processed image ",img_path)
 
     # Forward pass to generate caption
     with torch.cuda.amp.autocast(enabled=True):
         qform_all_proj, atts_qform_all_proj = model.encode_img(image)
+        print("Encoded image")
         prompt_embeds, atts_prompt = model.prompt_wrap(qform_all_proj, atts_qform_all_proj, model.prompt_list)
 
         tokenizer.padding_side = "right"
         batch_size = qform_all_proj.shape[0]
+        print("ok")
         bos = torch.ones([batch_size, 1], device=image.device) * tokenizer.bos_token_id
         bos = bos.long()
         bos_embeds = model.llama_model.model.embed_tokens(bos)
