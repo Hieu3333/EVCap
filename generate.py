@@ -106,13 +106,13 @@ def main(args):
         image_files = [os.path.join(image_folder, file) for file in os.listdir(image_folder) if file.endswith(('.png', '.jpg', '.jpeg'))]
 
         for img_path in image_files:
-            try:
-                caption = generate_caption(model, tokenizer, img_path, beam_width=args.beam_width)
-                f.write(f"{os.path.basename(img_path)}: {caption}\n")
-                print(f"Caption generated for {img_path}")
-            except Exception as e:
-                print(f"Error processing {img_path}: {e}")
-                f.write(f"{os.path.basename(img_path)}: ERROR - {e}\n")
+            # try:
+            caption = generate_caption(model, tokenizer, img_path, beam_width=args.beam_width)
+            f.write(f"{os.path.basename(img_path)}: {caption}\n")
+            print(f"Caption generated for {img_path}")
+            # except Exception as e:
+            #     print(f"Error processing {img_path}: {e}")
+            #     f.write(f"{os.path.basename(img_path)}: ERROR - {e}\n")
 
     print(f"Captions written to {output_file}")
 
