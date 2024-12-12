@@ -372,7 +372,12 @@ class EVCap(Blip2Base):
             obj_list = re_obj_act_all["objects"]
             action_list = re_obj_act_all["actions"]
             #Concatenate object list from lvis object memory and caption object memory
-            re_txt_list_all = torch.cat((re_txt_list_all,obj_list),dim=-1)
+            if len(re_txt_list_all) == len(obj_list):  # Check if the batch sizes match
+                # Concatenate along the second dimension for each batch element
+                re_txt_list_all = [row1 + row2 for row1, row2 in zip(re_txt_list_all, obj_list)]
+            else:
+                raise ValueError("Batch sizes (B) of the two lists do not match.")
+            
             re_txt_list_batch = []
             for sublist in re_txt_list_all:
                 sublist_new = []
