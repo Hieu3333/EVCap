@@ -159,8 +159,6 @@ class EVCap(Blip2Base):
             caption_ext_base_img = data["image_features"]
             self.caption_ext_base_img_id = data["captions"]
             print("External memory 2:" ,caption_ext_base_img.shape,len(self.caption_ext_base_img_id))
-            print(caption_ext_base_img[:5])
-            print(self.caption_ext_base_img_id[:5])
             caption_feature_library_cpu = caption_ext_base_img.cpu().numpy()
             faiss.normalize_L2(caption_feature_library_cpu)
             self.caption_feat_index = faiss.IndexFlatIP(caption_feature_library_cpu.shape[1])
@@ -366,9 +364,7 @@ class EVCap(Blip2Base):
             query_output_img = query_outputs_img.last_hidden_state #(B,num_query_tokens=32,Q_former_hidden_size=768)
             query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device) #(B,32) ?
             re_txt_list_all  = self.retrieve_similar_features(query_output_img, self.feat_index, self.ext_base_img_id)
-            print("get memory 1")
             re_obj_act_all = self.retrieve_caption_and_filter(query_features=query_output_img,feat_index=self.caption_feat_index, image_id=self.caption_ext_base_img_id)
-            print("get memory 2")
             obj_list = re_obj_act_all["objects"]
             action_list = re_obj_act_all["actions"]
             #Concatenate object list from lvis object memory and caption object memory
