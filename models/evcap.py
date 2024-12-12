@@ -362,7 +362,9 @@ class EVCap(Blip2Base):
             query_output_img = query_outputs_img.last_hidden_state #(B,num_query_tokens=32,Q_former_hidden_size=768)
             query_output_img_atts = torch.ones(query_output_img.size()[:-1], dtype=torch.long).to(device) #(B,32) ?
             re_txt_list_all  = self.retrieve_similar_features(query_output_img, self.feat_index, self.ext_base_img_id)
+            print("get memory 1")
             re_obj_act_all = self.retrieve_caption_and_filter(query_output_img,self.caption_feat_index, self.caption_ext_base_img_id)
+            print("get memory 2")
             obj_list = re_obj_act_all["object"]
             action_list = re_obj_act_all["action"]
             #Concatenate object list from lvis object memory and caption object memory
