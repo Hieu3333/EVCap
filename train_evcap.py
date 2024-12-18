@@ -140,7 +140,7 @@ def train(dataset, model, args):
  
         if epoch == epochs - 1:
             os.makedirs(output_dir, exist_ok=True)
-            output_dir_model = os.path.join(output_dir, f"{epoch:03d}.pt")
+            output_dir_model = os.path.join(output_dir, f"coco_{epoch:03d}.pt")
             save_checkpoint(model, optimizer, epoch, output_dir_model)
     return model
 
