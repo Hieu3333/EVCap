@@ -10,7 +10,7 @@ from optims import LinearWarmupCosineLRScheduler, set_optimizer
 from google.cloud import storage
 
 # from dataset.coco_dataset import COCODataset
-from dataset.fusecap_coco_dataset import COCODataset
+from dataset.coco_dataset import COCODataset
 from models.evcap import EVCap
 from common.dist_utils import (
     get_rank,
@@ -18,7 +18,7 @@ from common.dist_utils import (
     get_world_size,
 )
 
-def upload_to_gcs(local_file_path, bucket_name='evcap', blob_name='checkpoint/checkpoint.pt'):
+def upload_to_gcs(local_file_path, bucket_name='evcap', blob_name='checkpoint_coco/checkpoint_coco.pt'):
     """
     Uploads a file to Google Cloud Storage.
     """
@@ -185,6 +185,7 @@ def main():
     model_type = "lmsys/vicuna-13b-v1.3"
     model = EVCap(
             ext_path = 'ext_data/ext_memory_lvis.pkl',
+            caption_ext_path='ext_data',
             vit_model="eva_clip_g",
             q_former_model="https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xxl.pth",
             img_size=224,

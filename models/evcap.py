@@ -393,7 +393,7 @@ class EVCap(Blip2Base):
                         sublist_new.append(item)
                         if len(sublist_new)>self.topn: 
                             break
-                sublist_new = [" Action: "] + sublist_new
+                sublist_new = [" .Action: "] + sublist_new
                 re_act_list_batch.append(" [SEP] ".join(sublist_new))
             
             # Ensure both inputs are lists and have compatible shapes
@@ -405,7 +405,7 @@ class EVCap(Blip2Base):
                     raise ValueError("Batch sizes (B) of the two lists do not match.")
             else:
                 raise TypeError("Both inputs must be lists.")
-            print(re_final)
+            # print(re_final)
             
 
             # print(re_txt_list_batch)
