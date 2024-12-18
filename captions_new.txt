@@ -1,0 +1,72 @@
+southeastasia.jpg: Two women, one wearing a purple skirt and the other a pink and purple skirt, stand in front of a green tree. The woman on the left has long brown hair and wears a gold necklace, while the woman on the right has long brown hair and wears a purple
+piano-every-child-1920px-low.jpg: A woman's hands play a black and white piano on a brown wooden floor, with a white key visible in the foreground.
+
+istockphoto-1346125184-612x612.jpg: A diverse group of men and women, dressed in business attire, pose for a photo. The group includes a smiling man in a blue shirt, a smiling man in a gray shirt, a smiling man in a blue shirt, a smiling man in a blue shirt, a sm
+images.jpg: A group of soccer players celebrate their victory by raising their trophies in the air, with one player wearing a red shirt and another wearing a white shirt.
+
+images (3).jpg: Musical instruments, including a brown guitar, violin, and flute, are arranged on a hardwood floor against a blue wall.
+
+images (2).jpg: A black and white panda bear climbs a brown tree, with its black head and ear visible, against a blue sky.
+
+images (1).jpg: A gray kangaroo perches on a tree branch, with its distinctive black eye and white ear visible.
+
+fes.jpg: A group of people dressed in period clothing walk down a cobblestone street lined with a white building and a tall tree. One person wears a black hat and carries a black bag, while another wears a white shirt.
+
+cuteanimals03.jpg: Two guinea pigs, one brown and one black and white, are seen in a grassy area. The brown guinea pig has a black and brown head, a black eye, and a black and brown ear. The black and white guinea pig has a black and brown head, a black and
+coal.jpg: A man in a yellow vest stands next to a large excavator in a quarry, with a black tire visible in the foreground and a blue sky with white clouds in the background.
+
+city.jpg: A serene sunset scene featuring a bridge over calm waters, with tall buildings in the background and a purple sky.
+
+cac-the-loai-nhay-hiphop.jpg: A group of young men, dressed in white shirts and black pants, perform skateboard tricks in front of a tall building under a blue sky. One man wears a black shoe and another wears a black shoe.
+
+act.jpg: A group of people, including a young girl with long blond hair, dance in a field under a cloudy blue sky. One person wears a white shirt and another wears a blue shirt.
+
+Most-Popular-Musical-Instruments-That-Students-Learn.jpeg: A collection of musical instruments, including a brown violin, a black guitar, and a brown and black violin, are arranged against a wooden wall.
+
+Kylian-9678-1726008742.jpg: A man in a white shirt holds a silver trophy while standing next to a man in a white shirt. The man in the white shirt has brown hair and is wearing a silver necklace.
+
+F4Y7WNE2TGUVQJV4V4DWGRRF3Y.jpg: A majestic mountain lion stands amidst a lush forest, surrounded by moss-covered trees.
+
+B-boy_breakdancing.jpg: A man in a yellow shirt performs a skateboard trick in front of a group of people, including a standing man wearing a blue shirt and black pants, and a standing man wearing a blue shirt. The scene is set against a white sky.
+
+3-female-ballad-singers-with-the-most-powerful-vocals.jpg: A woman with long brown hair is singing in front of a black microphone, illuminated by a bright light, with her hand visible in the foreground.
+
+2021.03.10_AnimalCuteness_Getty.width-1000.jpg: A brown rabbit and a yellow chick stand in a field of purple and white flowers, with the rabbit's brown head and ear visible, and the chick's yellow beak and leg also visible.
+
+[' Object:  [SEP] parasol [SEP] lightning rod [SEP] wreath [SEP] window box for plants [SEP] slide [SEP] flip-flop sandal [SEP] plume [SEP] button [SEP] calf [SEP] lamppost Action:  [SEP] holding [SEP] standing [SEP] perform']
+Caption generated for images/southeastasia.jpg
+[' Object:  [SEP] musical instrument [SEP] piano [SEP] violin [SEP] gameboard [SEP] bulldog [SEP] cellular telephone [SEP] gift wrap [SEP] computer [SEP] keyboard [SEP] cat Action:  [SEP] sitting [SEP] holding [SEP] typing']
+Caption generated for images/piano-every-child-1920px-low.jpg
+[' Object:  [SEP] aquarium [SEP] toy [SEP] veil [SEP] lamp [SEP] beeper [SEP] knee pad [SEP] shopping bag [SEP] blazer [SEP] wine bottle [SEP] cymbal Action:  [SEP] sitting [SEP] posing [SEP] standing']
+Caption generated for images/istockphoto-1346125184-612x612.jpg
+[' Object:  [SEP] wristband [SEP] whistle [SEP] belt buckle [SEP] armband [SEP] necktie [SEP] flagpole [SEP] snowman [SEP] trophy cup [SEP] gasmask [SEP] duffel bag Action:  [SEP] playing [SEP] stand [SEP] are']
+Caption generated for images/images.jpg
+[' Object:  [SEP] doorknob [SEP] plastic bag [SEP] candle holder [SEP] piano [SEP] whistle [SEP] sofa [SEP] runner carpet [SEP] pen [SEP] gameboard [SEP] handle Action:  [SEP] sitting [SEP] laying [SEP] cut']
+Caption generated for images/images (3).jpg
+[' Object:  [SEP] lightning rod [SEP] giant panda [SEP] bear [SEP] polar bear [SEP] grizzly [SEP] giraffe [SEP] swimsuit [SEP] deck chair [SEP] passenger car part of a train [SEP] mast Action:  [SEP] standing [SEP] melted [SEP] looking']
+Caption generated for images/images (2).jpg
+[' Object:  [SEP] koala [SEP] grizzly [SEP] goat [SEP] giant panda [SEP] giraffe [SEP] squirrel [SEP] bear [SEP] minivan [SEP] parrot [SEP] tree Action:  [SEP] standing [SEP] laying [SEP] melted']
+Caption generated for images/images (1).jpg
+[' Object:  [SEP] sail [SEP] banjo [SEP] streetlight [SEP] boxing glove [SEP] bib [SEP] flagpole [SEP] backpack [SEP] tablecloth [SEP] gasmask [SEP] shoulder bag Action:  [SEP] riding [SEP] standing [SEP] walking']
+Caption generated for images/fes.jpg
+[' Object:  [SEP] goat [SEP] grizzly [SEP] cow [SEP] hamster [SEP] bull [SEP] bell [SEP] ram animal [SEP] polar bear [SEP] giraffe [SEP] ferret Action:  [SEP] standing [SEP] laying [SEP] lay']
+Caption generated for images/cuteanimals03.jpg
+[' Object:  [SEP] power shovel [SEP] bulldozer [SEP] reflector [SEP] trailer truck [SEP] log [SEP] airplane [SEP] polar bear [SEP] grizzly [SEP] wheel [SEP] propeller Action:  [SEP] flying [SEP] parked [SEP] seen']
+Caption generated for images/coal.jpg
+[' Object:  [SEP] mast [SEP] ferris wheel [SEP] buoy [SEP] weathervane [SEP] ferry [SEP] license plate [SEP] dress suit [SEP] sail [SEP] cruise ship [SEP] stop sign Action:  [SEP] traveling [SEP] seen [SEP] lit']
+Caption generated for images/city.jpg
+[' Object:  [SEP] bullhorn [SEP] camcorder [SEP] underdrawers [SEP] nut [SEP] sweatshirt [SEP] baby buggy [SEP] bandanna [SEP] water cooler [SEP] bench [SEP] gull Action:  [SEP] holding [SEP] riding [SEP] doing']
+Caption generated for images/cac-the-loai-nhay-hiphop.jpg
+[' Object:  [SEP] raincoat [SEP] kite [SEP] watch [SEP] airplane [SEP] folding chair [SEP] cincture [SEP] skirt [SEP] poncho [SEP] headband [SEP] lamppost Action:  [SEP] standing [SEP] flying [SEP] playing']
+Caption generated for images/act.jpg
+[' Object:  [SEP] calculator [SEP] bass horn [SEP] pen [SEP] thermostat [SEP] plastic bag [SEP] gemstone [SEP] piano [SEP] saxophone [SEP] fedora [SEP] barbell Action:  [SEP] laying [SEP] standing [SEP] sits']
+Caption generated for images/Most-Popular-Musical-Instruments-That-Students-Learn.jpeg
+[' Object:  [SEP] armband [SEP] trophy cup [SEP] belt buckle [SEP] necklace [SEP] whistle [SEP] water jug [SEP] robe [SEP] bass horn [SEP] mallet [SEP] television camera Action:  [SEP] playing [SEP] are [SEP] has']
+Caption generated for images/Kylian-9678-1726008742.jpg
+[' Object:  [SEP] fireplug [SEP] deer [SEP] ram animal [SEP] log [SEP] cow [SEP] cub animal [SEP] calf [SEP] crow [SEP] foal [SEP] gazelle Action:  [SEP] standing [SEP] stands [SEP] melted']
+Caption generated for images/F4Y7WNE2TGUVQJV4V4DWGRRF3Y.jpg
+[' Object:  [SEP] bench [SEP] poncho [SEP] jersey [SEP] camcorder [SEP] flip-flop sandal [SEP] baby buggy [SEP] wreath [SEP] watch [SEP] underdrawers [SEP] swimsuit Action:  [SEP] standing [SEP] doing [SEP] taking']
+Caption generated for images/B-boy_breakdancing.jpg
+[' Object:  [SEP] cowbell [SEP] plastic bag [SEP] sweater [SEP] skullcap [SEP] deck chair [SEP] spotlight [SEP] coat hanger [SEP] microphone [SEP] amplifier [SEP] kimono Action:  [SEP] holding [SEP] dressed [SEP] singing']
+Caption generated for images/3-female-ballad-singers-with-the-most-powerful-vocals.jpg
+[' Object:  [SEP] goat [SEP] polar bear [SEP] gameboard [SEP] alligator [SEP] hamster [SEP] foal [SEP] cub animal [SEP] giraffe [SEP] crow [SEP] ostrich Action:  [SEP] eating [SEP] laying [SEP] sitting']
