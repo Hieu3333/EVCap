@@ -179,6 +179,7 @@ def main():
     # Test upload to Google Cloud Storage before starting the training
     test_file_path = create_test_file()  # Create a dummy test file
     upload_to_gcs(test_file_path, bucket_name='evcap', blob_name='test/test_upload.txt')
+    print("Upload to GCS successfully")
     
     data_root = 'data/coco/coco2014'
     dataset = COCODataset(data_root=data_root)
