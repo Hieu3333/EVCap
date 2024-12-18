@@ -26,7 +26,7 @@ class COCODataset(Dataset):
         }
 
     def __init__(self, data_root):
-        ann_path = os.path.join(data_root, 'annotations/captions_train2014.json')
+        ann_path = os.path.join(data_root, 'val2014/annotations/captions_train2014.json')
         self.vis_root=os.path.join(data_root, 'train2014')
         self.annotation = []
         self.annotation.extend(json.load(open(ann_path, "r"))['annotations'])

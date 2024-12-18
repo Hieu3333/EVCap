@@ -181,7 +181,7 @@ def main():
     upload_to_gcs(test_file_path, bucket_name='evcap', blob_name='test/test_upload.txt')
     print("Upload to GCS successfully")
     
-    data_root = 'data/coco/coco2014'
+    data_root = './annotations/coco/'
     dataset = COCODataset(data_root=data_root)
     model_type = "lmsys/vicuna-13b-v1.3"
     model = EVCap(
