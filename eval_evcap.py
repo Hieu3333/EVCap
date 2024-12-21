@@ -239,7 +239,7 @@ def main(args) -> None:
     device = args.device
     # loading model
     model_type = "lmsys/vicuna-13b-v1.3"
-    ckpt = 'results/train_evcap/000.pt'
+    ckpt = 'results/train_evcap/final_000.pt'
     print('load:', ckpt)
     model = EVCap(
             ext_path = 'ext_data/ext_memory_lvis.pkl',
