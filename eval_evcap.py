@@ -243,6 +243,7 @@ def main(args) -> None:
     print('load:', ckpt)
     model = EVCap(
             ext_path = 'ext_data/ext_memory_lvis.pkl',
+            caption_ext_path='ext_data/caption_ext_memory.pkl',
             vit_model="eva_clip_g",
             q_former_model="https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xxl.pth",
             img_size=224,
