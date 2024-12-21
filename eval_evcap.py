@@ -123,9 +123,9 @@ def validation_coco_flickr30k(
         # Get the captions for the image using the image_id
         captions = image_id_to_captions.get(image_id, [])
 
-        # print('\n')
-        # print(f"Image Path: {image_path}")
-        # print(f"GT Captions: {captions}")
+        print('\n')
+        print(f"Image Path: {image_path}")
+        print(f"GT Captions: {captions}")
 
         # Preprocess the image and move to the correct device
         image = preprocess_image(image_path).to(device)
