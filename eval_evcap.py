@@ -131,7 +131,7 @@ def validation_coco_flickr30k(
         image = preprocess_image(image_path).to(device)
 
         # Perform the forward pass with mixed-precision enabled
-        with torch.cuda.amp.autocast(enabled=True):
+        with torch.no_grad(), torch.cuda.amp.autocast(enabled=True):
             qform_all_proj, atts_qform_all_proj = model.encode_img(image)
             prompt_embeds, atts_prompt = model.prompt_wrap(qform_all_proj, atts_qform_all_proj, model.prompt_list)
             tokenizer.padding_side = "right"
