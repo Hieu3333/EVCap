@@ -16,7 +16,6 @@ python -u eval_evcap.py \
 --name_of_datasets coco \
 --path_of_val_datasets dataset_coco_test_split.json \
 --image_folder annotations/coco/val2014/ \
---beam_width 1 \
 --out_path=$COCO_OUT_PATH \
 |& tee -a  ${COCO_LOG_FILE}
 
