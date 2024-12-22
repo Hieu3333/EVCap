@@ -120,7 +120,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--device', default='cuda:0', help='Device to run the model on (e.g., "cuda:0" or "cpu")')
     parser.add_argument('--images_folder', default='images', help='Path to the folder containing images')
-    parser.add_argument('--ckpt', default='results/train_evcap/final_000.pt', help='Path to the checkpoint file')
+    parser.add_argument('--ckpt', default='results/train_evcap/coco_000.pt', help='Path to the checkpoint file')
     parser.add_argument('--beam_width', type=int, default=5, help='Beam width for beam search')
     parser.add_argument('--random_seed', type=int, default=42, help='Random seed for reproducibility')
 
