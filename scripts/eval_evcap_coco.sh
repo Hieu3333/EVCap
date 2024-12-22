@@ -14,7 +14,7 @@ COCO_LOG_FILE="$LOG_FOLDER/COCO_${TIME_START}.log"
 python -u eval_evcap.py \
 --device cuda:$DEVICE \
 --name_of_datasets coco \
---path_of_val_datasets annotations/dataset_coco.json \
+--path_of_val_datasets dataset_coco_test_split.json \
 --image_folder annotations/coco/val2014/ \
 --beam_width 1 \
 --out_path=$COCO_OUT_PATH \
