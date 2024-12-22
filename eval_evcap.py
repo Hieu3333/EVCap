@@ -95,38 +95,25 @@ def validation_coco_flickr30k(
 ) -> None:
     model.eval()
     device = args.device
-    # Load the COCO annotations
+
+    # Load the Karpathy split JSON
     with open(inpath, 'r') as infile:
         annotations = json.load(infile)
 
-    # Assuming 'annotations' contains both 'images' and 'annotations' sections
+    # Assuming 'images' contains the image details
     image_details = annotations.get('images', [])
-    caption_details = annotations.get('annotations', [])
     predicts = []
 
-    # Create a dictionary mapping image_ids to captions
-    image_id_to_captions = {}
-    for caption in caption_details:
-        image_id = caption['image_id']
-        caption_text = caption['caption']
-        if image_id not in image_id_to_captions:
-            image_id_to_captions[image_id] = []
-        image_id_to_captions[image_id].append(caption_text)
-    
     # Iterate through each image and process
     for idx, item in tqdm(enumerate(image_details)):
         # Access image_id and file_name
-        image_id = item['id']
-        image_filename = item['file_name']
+        image_id = item.get('cocoid', item.get('id'))
+        image_filename = item.get('filename')
+        
         image_path = os.path.join(args.image_folder, image_filename)  # Ensure correct path formation
 
-        # Skip if the image does not exist
-        if not os.path.exists(image_path):
-            print(f"Skipping missing image: {image_path}")
-            continue
-
-        # Get the captions for the image using the image_id
-        captions = image_id_to_captions.get(image_id, [])
+        # Get the captions for the image from the 'sentences' field
+        captions = [sentence['raw'] for sentence in item.get('sentences', [])]
 
         print('\n')
         print(f"Image Path: {image_path}")
@@ -147,17 +134,19 @@ def validation_coco_flickr30k(
             bos = bos.long()
             bos_embeds = model.llama_model.model.embed_tokens(bos)
             embeddings = torch.cat([bos_embeds, prompt_embeds], dim=1)
-            sentence = beam_search(embeddings = embeddings, tokenizer = tokenizer, beam_width = args.beam_width, model = model.llama_model) # List[str]
+            sentence = beam_search(embeddings=embeddings, tokenizer=tokenizer, beam_width=args.beam_width, model=model.llama_model)  # List[str]
             sentence = sentence[0]
             print('Pred: ', sentence)
-  
-        predict = {}
-        predict["split"] = 'valid'
-        predict["image_name"] = image_id
-        predict["captions"] = captions
-        predict["prediction"] = sentence
+
+        predict = {
+            "split": 'test',
+            "image_name": image_id,
+            "captions": captions,
+            "prediction": sentence
+        }
         predicts.append(predict)
-    
+
+    # Save predictions to a JSON file
     if not os.path.exists(args.out_path):
         os.makedirs(args.out_path, exist_ok=True)
     out_json_path = os.path.join(args.out_path, f'{args.name_of_datasets}_generated_captions.json')
