@@ -1,21 +1,25 @@
 import json
 
-# Load the Karpathy split JSON file
-with open("dataset_flickr32k.json", "r") as split_file:  # Replace with your split file
-    split_data = json.load(split_file)
+# Load the Flickr30k test split file
+with open('flickr30k_test_split.json', 'r') as f:
+    flickr30k_test_split = json.load(f)
 
-# Load the Flickr30k dataset JSON file
-with open("dataset_flickr32k.json", "r") as dataset_file:  # Replace with your dataset file
-    dataset_data = json.load(dataset_file)
+# Load the evaluation results file
+with open('eval_flickr30k.json', 'r') as f:
+    eval_flickr30k = json.load(f)
 
-# Extract test split image filenames
-test_filenames = {item["filename"] for item in split_data["images"] if item["split"] == "test"}
+# Extract the image IDs from flickr30k_test_split.json
+image_ids = [image["imgid"] for image in flickr30k_test_split["images"]]
 
-# Filter images in the test split
-test_images = [image for image in dataset_data["images"] if image["filename"] in test_filenames]
+# Update eval_flickr30k.json with the corresponding image IDs
+for i, result in enumerate(eval_flickr30k):
+    if i < len(image_ids):
+        result["image_name"] = image_ids[i]
+    else:
+        print(f"Warning: More predictions in eval_flickr30k.json than images in flickr30k_test_split.json. Skipping extra predictions.")
 
-# Save filtered test images to a new file (optional)
-with open("flickr30k_test_split.json", "w") as output_file:
-    json.dump({"dataset": "flickr30k", "images": test_images}, output_file, indent=4)
+# Save the updated eval_flickr30k.json
+with open('eval_flickr30k_updated.json', 'w') as f:
+    json.dump(eval_flickr30k, f, indent=4)
 
-print(f"Filtered {len(test_images)} test images.")
+print("Successfully added image IDs to eval_flickr30k.json!")
