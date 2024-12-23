@@ -408,10 +408,6 @@ class EVCap(Blip2Base):
             # print(re_final)
             
 
-            # print(re_txt_list_batch)
-
-            
-
             text = self.bert_tokenizer(
                     re_final,
                     truncation=True,

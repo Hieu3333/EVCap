@@ -9,7 +9,7 @@ TIME_START=$(date "+%Y-%m-%d-%H-%M-%S")
 LOG_FOLDER=logs/${EXP_NAME}_EVAL
 mkdir -p $LOG_FOLDER
 
-NOCAPS_LOG_FILE="$LOG_FOLDER/NOCAPS_${TIME_START}.log"
+FLICKR_LOG_FILE="$LOG_FOLDER/FLICKR30K_${TIME_START}.log"
 
 python -u eval_evcap.py \
 --device cuda:$DEVICE \
@@ -17,7 +17,7 @@ python -u eval_evcap.py \
 --path_of_val_datasets data/flickr30k/test_captions.json \
 --image_folder data/flickr30k/flickr30k-images/flickr30k/image/ \
 --out_path=$FLICKR_OUT_PATH \
-|& tee -a  ${NOCAPS_LOG_FILE}
+|& tee -a  ${FLICKR_LOG_FILE}
 
 
 echo "==========================FLICKR30k EVAL================================"
