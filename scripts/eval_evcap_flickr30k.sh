@@ -15,7 +15,7 @@ python -u eval_evcap.py \
 --device cuda:$DEVICE \
 --name_of_datasets flickr30k \
 --path_of_val_datasets flickr30k_test_split.json \
---image_folder annotations/flickr30k \
+--image_folder annotations/flickr30k/Images/ \
 --out_path=$FLICKR_OUT_PATH \
 |& tee -a  ${FLICKR_LOG_FILE}
 
