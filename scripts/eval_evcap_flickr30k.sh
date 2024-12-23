@@ -14,8 +14,8 @@ FLICKR_LOG_FILE="$LOG_FOLDER/FLICKR30K_${TIME_START}.log"
 python -u eval_evcap.py \
 --device cuda:$DEVICE \
 --name_of_datasets flickr30k \
---path_of_val_datasets data/flickr30k/test_captions.json \
---image_folder data/flickr30k/flickr30k-images/flickr30k/image/ \
+--path_of_val_datasets flickr30k_test_split.json \
+--image_folder annotations/flickr30k \
 --out_path=$FLICKR_OUT_PATH \
 |& tee -a  ${FLICKR_LOG_FILE}
 
