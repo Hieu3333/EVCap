@@ -1,0 +1,37 @@
+(/workspace/env_evcap) root@700fd896a228:/workspace/EVCap# python evaluation/cocoeval.py --result_file_path eval_flickr30k_updated.json
+tokenization...
+PTBTokenizer tokenized 72436 tokens at 360111.56 tokens per second.
+PTBTokenizer tokenized 11793 tokens at 111540.23 tokens per second.
+setting up scorers...
+computing Bleu score...
+{'testlen': 9790, 'reflen': 9753, 'guess': [9790, 8790, 7790, 6790], 'correct': [7454, 3977, 1928, 920]}
+ratio: 1.003793704501076
+Bleu_1: 0.761
+Bleu_2: 0.587
+Bleu_3: 0.440
+Bleu_4: 0.328
+computing METEOR score...
+METEOR: 0.249
+computing Rouge score...
+ROUGE_L: 0.530
+computing CIDEr score...
+CIDEr: 0.846
+computing SPICE score...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.nustaq.serialization.FSTClazzInfo (file:/workspace/EVCap/evaluation/pycocoevalcap/spice/lib/fst-2.47.jar) to field java.lang.String.value
+WARNING: Please consider reporting this to the maintainers of org.nustaq.serialization.FSTClazzInfo
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+Parsing reference captions
+Parsing test captions
+Warning: Nashorn engine is planned to be removed from a future JDK release
+SPICE evaluation took: 4.980 s
+SPICE: 0.182
+Bleu_1: 0.761
+Bleu_2: 0.587
+Bleu_3: 0.440
+Bleu_4: 0.328
+METEOR: 0.249
+ROUGE_L: 0.530
+CIDEr: 0.846
+SPICE: 0.182
