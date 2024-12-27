@@ -1,0 +1,55 @@
+In-domain:
+Warning: Nashorn engine is planned to be removed from a future JDK release
+SPICE evaluation took: 19.01 s
+SPICE: 0.156
+Bleu_1: 0.874
+Bleu_2: 0.752
+Bleu_3: 0.619
+Bleu_4: 0.494
+METEOR: 0.320
+ROUGE_L: 0.629
+CIDEr: 1.123
+SPICE: 0.156
+
+Near-domain:
+Warning: Nashorn engine is planned to be removed from a future JDK release
+SPICE evaluation took: 25.56 s
+SPICE: 0.157
+Bleu_1: 0.882
+Bleu_2: 0.762
+Bleu_3: 0.627
+Bleu_4: 0.502
+METEOR: 0.319
+ROUGE_L: 0.636
+CIDEr: 1.198
+SPICE: 0.157
+
+Out-domain
+Loading classifier from edu/stanford/nlp/models/ner/english.conll.4class.distsim.crf.ser.gz ... done [0.5 sec].
+Threads( StanfordCoreNLP ) [7.972 seconds]
+Warning: Nashorn engine is planned to be removed from a future JDK release
+SPICE evaluation took: 16.16 s
+SPICE: 0.147
+Bleu_1: 0.848
+Bleu_2: 0.697
+Bleu_3: 0.544
+Bleu_4: 0.411
+METEOR: 0.287
+ROUGE_L: 0.593
+CIDEr: 1.163
+SPICE: 0.147
+
+Overall
+Parsing test captions
+Warning: Nashorn engine is planned to be removed from a future JDK release
+SPICE evaluation took: 8.644 s
+SPICE: 0.154
+Bleu_1: 0.871
+Bleu_2: 0.741
+Bleu_3: 0.601
+Bleu_4: 0.474
+METEOR: 0.309
+ROUGE_L: 0.622
+CIDEr: 1.195
+SPICE: 0.154
+
