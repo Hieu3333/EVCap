@@ -179,7 +179,8 @@ def validation_nocaps(
         img_id = ann['image_id']
         image_id = ann[10*idx]['image_id']
         split = 'val'
-        captions = [cap['caption'] for cap in ann[10*idx]["annotations"]]
+        current_ann = ann[10*idx:10*idx+10]
+        captions = [cap['caption'] for cap in current_ann]
         print('\n')
         image_path = args.image_folder + '/' + image_file
         print(image_path)
