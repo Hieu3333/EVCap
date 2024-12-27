@@ -178,7 +178,7 @@ def validation_nocaps(
         image_file = images[idx]['file_name']
         img_id = ann['image_id']
         image_id = ann[10*idx]['image_id']
-        split = 'val'
+        split = images[idx]['domain']
         current_ann = ann[10*idx:10*idx+10]
         captions = [cap['caption'] for cap in current_ann]
         print('\n')
