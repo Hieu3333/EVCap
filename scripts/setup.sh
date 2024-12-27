@@ -30,6 +30,8 @@ source activate /workspace/env_evcap
 echo "Environment setup complete."
 export HF_HOME=/workspace/huggingface_cache
 python -m spacy download en_core_web_sm
+apt update
+apt install openjdk-11-jre
 
 
 # echo "Installing Google Cloud SDK..."
