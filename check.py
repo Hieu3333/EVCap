@@ -1,25 +1,40 @@
 import json
+import os
+with open('eval_log/nocaps/overall_generated_captions.json','r', encoding='utf-8') as file:
+    data = json.load(file)
+indomain = []
+neardomain = []
+outdomain = []
 
-# Load the Flickr30k test split file
-with open('flickr30k_test_split.json', 'r') as f:
-    flickr30k_test_split = json.load(f)
+i = 0
+n = 0
+o = 0
 
-# Load the evaluation results file
-with open('eval_flickr30k.json', 'r') as f:
-    eval_flickr30k = json.load(f)
+for item in data:
+    if item['split'] == 'in-domain':
+        indomain.append(item)
+        i+=1
+    if item['split'] == 'out-domain':
+        outdomain.append(item)
+        o+=1
+    if item['split'] == 'near-domain':
+        neardomain.append(item)
+        n+=1
 
-# Extract the image IDs from flickr30k_test_split.json
-image_ids = [image["imgid"] for image in flickr30k_test_split["images"]]
+print(f"in {i}")
+print(f"out {o}")
+print(f"near {n}")
+print(f"sum {i+o+n}")
 
-# Update eval_flickr30k.json with the corresponding image IDs
-for i, result in enumerate(eval_flickr30k):
-    if i < len(image_ids):
-        result["image_name"] = image_ids[i]
-    else:
-        print(f"Warning: More predictions in eval_flickr30k.json than images in flickr30k_test_split.json. Skipping extra predictions.")
+out_path = 'eval_log/nocaps'
+if not os.path.exists(out_path):
+        os.makedirs(out_path, exist_ok=True)
 
-# Save the updated eval_flickr30k.json
-with open('eval_flickr30k_updated.json', 'w') as f:
-    json.dump(eval_flickr30k, f, indent=4)
 
-print("Successfully added image IDs to eval_flickr30k.json!")
+with open(os.path.join(out_path, f'indomain_generated_captions.json'), 'w') as outfile:
+    json.dump(indomain, outfile, indent = 4)
+with open(os.path.join(out_path, f'neardomain_generated_captions.json'), 'w') as outfile:
+    json.dump(neardomain, outfile, indent = 4)
+with open(os.path.join(out_path, f'outdomain_generated_captions.json'), 'w') as outfile:
+    json.dump(outdomain, outfile, indent = 4)
+

@@ -209,11 +209,11 @@ def validation_nocaps(
             predict["prediction"] = sentence
 
             overall.append(predict)
-            if split == 'in_domain':
+            if split == 'in-domain':
                 indomain.append(predict)
-            elif split == 'near_domain':
+            elif split == 'near-domain':
                 neardomain.append(predict)
-            elif split == 'out_domain':
+            elif split == 'out-domain':
                 outdomain.append(predict)
 
     if not os.path.exists(args.out_path):
