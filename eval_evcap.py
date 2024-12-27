@@ -165,19 +165,21 @@ def validation_nocaps(
     device = args.device
     with open(inpath, 'r') as infile:
         annotations = json.load(infile)
+    images = annotations["images"]
+    ann = annotations["annotations"]
     indomain = []
     neardomain = []
     outdomain = []
     overall = []
-    img_info = json.load(open('/home/nlab/li/research/3_NOC/ours_blip/M_MiniGPT-4/data/nocaps/nocaps_val.json','r'))
+    # img_info = json.load(open('/home/nlab/li/research/3_NOC/ours_blip/M_MiniGPT-4/data/nocaps/nocaps_val.json','r'))
     model.eval()
     for idx, annotation in tqdm(enumerate(annotations)):
-        ann = img_info[idx]
-        image_file = ann['image']
-        img_id = ann['img_id']
+        # ann = img_info[idx]
+        image_file = images['file_name']
+        img_id = ann['image_id']
         image_id = annotation['image_id']
-        split = annotation['split']
-        captions = annotation['caption']
+        split = 'val'
+        captions = [cap['caption'] for cap in ann["annotations"]]
         print('\n')
         image_path = args.image_folder + '/' + image_file
         print(image_path)

@@ -15,19 +15,19 @@ NOCAPS_LOG_FILE="$LOG_FOLDER/NOCAPS_${TIME_START}.log"
 python -u eval_evcap.py \
 --device cuda:$DEVICE \
 --name_of_datasets nocaps \
---path_of_val_datasets data/nocaps/nocaps_corpus.json \
---image_folder data/nocaps \
+--path_of_val_datasets nocaps_val_set.json \
+--image_folder annotations/nocaps \
 --out_path=$NOCAPS_OUT_PATH \
 |& tee -a  ${NOCAPS_LOG_FILE} 
 
 
-echo "==========================NOCAPS IN-DOAMIN================================"
+echo "==========================NOCAPS IN-DOMAIN================================"
 python evaluation/cocoeval.py --result_file_path  ${NOCAPS_OUT_PATH}/indomain*.json |& tee -a  ${NOCAPS_LOG_FILE}
-echo "==========================NOCAPS NEAR-DOAMIN================================"
+echo "==========================NOCAPS NEAR-DOMAIN================================"
 python evaluation/cocoeval.py --result_file_path  ${NOCAPS_OUT_PATH}/neardomain*.json |& tee -a  ${NOCAPS_LOG_FILE}
-echo "==========================NOCAPS OUT-DOAMIN================================"
+echo "==========================NOCAPS OUT-DOMAIN================================"
 python evaluation/cocoeval.py --result_file_path  ${NOCAPS_OUT_PATH}/outdomain*.json |& tee -a  ${NOCAPS_LOG_FILE}
-echo "==========================NOCAPS ALL-DOAMIN================================"
+echo "==========================NOCAPS ALL-DOMAIN================================"
 python evaluation/cocoeval.py --result_file_path  ${NOCAPS_OUT_PATH}/overall*.json |& tee -a  ${NOCAPS_LOG_FILE}
 
 
