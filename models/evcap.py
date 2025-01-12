@@ -159,7 +159,21 @@ class EVCap(Blip2Base):
             caption_ext_base_img = data["image_features"]
             self.caption_ext_base_img_id = data["captions"]
             print("External memory 2:" ,caption_ext_base_img.shape,len(self.caption_ext_base_img_id))
-            caption_feature_library_cpu = caption_ext_base_img.cpu().numpy()
+            # Determine the number of items to remove (20%)
+            total_keys = len(caption_ext_base_img)
+            remove_count = int(total_keys * 0.2)
+
+            # Randomly sample indices to remove
+            all_indices = list(range(total_keys))
+            remove_indices = set(random.sample(all_indices, remove_count))
+
+            # Create reduced datasets by retaining the other 80%
+            retain_indices = [i for i in all_indices if i not in remove_indices]
+            reduced_img_features = caption_ext_base_img[retain_indices]
+
+            # Check the reduced size
+            print(f"Original size: {total_keys}, Reduced size: {len(reduced_img_features)}")
+            caption_feature_library_cpu = reduced_img_features.cpu().numpy()
             faiss.normalize_L2(caption_feature_library_cpu)
             self.caption_feat_index = faiss.IndexFlatIP(caption_feature_library_cpu.shape[1])
             self.caption_feat_index.add(caption_feature_library_cpu)
