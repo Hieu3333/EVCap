@@ -1,7 +1,7 @@
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 cd $SHELL_FOLDER/..
 
-EXP_NAME="NoCaps_30%"
+EXP_NAME="NoCaps_60%"
 DEVICE=$2
 NOCAPS_OUT_PATH=results/$EXP_NAME
 
