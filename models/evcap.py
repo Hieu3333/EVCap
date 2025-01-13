@@ -159,9 +159,9 @@ class EVCap(Blip2Base):
             caption_ext_base_img = data["image_features"]
             self.caption_ext_base_img_id = data["captions"]
             print("External memory 2:" ,caption_ext_base_img.shape,len(self.caption_ext_base_img_id))
-            # Determine the number of items to remove (30%)
+            # Determine the number of items to remove (60%)
             total_keys = len(caption_ext_base_img)
-            remove_count = int(total_keys * 0.3)
+            remove_count = int(total_keys * 0.6)
 
             # Randomly sample indices to remove
             all_indices = list(range(total_keys))
