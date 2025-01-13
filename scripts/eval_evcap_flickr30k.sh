@@ -1,7 +1,7 @@
 SHELL_FOLDER=$(cd "$(dirname "$0")";pwd)
 cd $SHELL_FOLDER/..
 
-EXP_NAME="Flickr30k_60%"
+EXP_NAME="Flickr30k_90%"
 DEVICE=$2
 FLICKR_OUT_PATH=results/$EXP_NAME
 
