@@ -107,7 +107,7 @@ def validation_coco_flickr30k(
     # Iterate through each image and process
     for idx, item in tqdm(enumerate(image_details)):
         # Access image_id and file_name
-        image_id = image_details.get('image_id')
+        image_id = item.get('image_id')
         image_filename = item.get('filename')
         
         image_path = os.path.join(args.image_folder, image_filename)  # Ensure correct path formation
