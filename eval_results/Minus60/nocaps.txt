@@ -1,0 +1,43 @@
+1.In-domain:
+SPICE: 0.156
+Bleu_1: 0.873
+Bleu_2: 0.751
+Bleu_3: 0.618
+Bleu_4: 0.494
+METEOR: 0.320
+ROUGE_L: 0.628
+CIDEr: 1.126
+SPICE: 0.156
+
+2.Near-domain:
+SPICE: 0.156
+Bleu_1: 0.882
+Bleu_2: 0.761
+Bleu_3: 0.627
+Bleu_4: 0.502
+METEOR: 0.318
+ROUGE_L: 0.635
+CIDEr: 1.198
+SPICE: 0.156
+
+3. Out-domain:
+SPICE: 0.147
+Bleu_1: 0.847
+Bleu_2: 0.697
+Bleu_3: 0.544
+Bleu_4: 0.410
+METEOR: 0.286
+ROUGE_L: 0.592
+CIDEr: 1.159
+SPICE: 0.147
+
+4.Overall:
+SPICE: 0.153
+Bleu_1: 0.870
+Bleu_2: 0.741
+Bleu_3: 0.601
+Bleu_4: 0.473
+METEOR: 0.308
+ROUGE_L: 0.621
+CIDEr: 1.194
+SPICE: 0.153
